@@ -359,12 +359,39 @@ body {
 
 /* SETTINGS PANEL */
 .settings-panel {
+  position: relative;
   background: rgba(10, 13, 27, 0.96);
   border-radius: 14px;
-  padding: 8px 9px;
+  padding: 8px 9px 9px;
   margin-bottom: 6px;
   border: 1px solid rgba(49, 58, 92, 0.85);
   box-shadow: 0 10px 25px rgba(0,0,0,0.55);
+}
+
+.settings-close-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid #343a4c;
+  background: #151a29;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.settings-close-icon:hover {
+  background: #1e2436;
+  border-color: var(--accent);
+  color: var(--text-primary);
 }
 
 .settings-panel.hidden {
@@ -374,7 +401,7 @@ body {
 .settings-title {
   font-size: 12px;
   font-weight: 600;
-  margin-bottom: 6px;
+  margin: 2px 28px 6px 0;
   color: var(--text-secondary);
 }
 
@@ -606,22 +633,6 @@ body {
   margin-top: 4px;
   font-size: 10px;
   color: var(--text-secondary);
-}
-
-/* FOOTER */
-.settings-footer {
-  display: flex;
-  justify-content: flex-end;
-}
-
-#settings-close-btn {
-  background: transparent;
-  color: var(--text-secondary);
-  border: 1px solid #343a4c;
-  border-radius: 999px;
-  font-size: 11px;
-  padding: 3px 10px;
-  cursor: pointer;
 }
 
 /* EMPTY / ERROR STATES */
