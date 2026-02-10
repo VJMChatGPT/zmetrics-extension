@@ -57,6 +57,9 @@ const loginErrorEl        = document.getElementById("login-error");
 const accountEmailEl      = document.getElementById("account-email");
 const logoutBtn           = document.getElementById("logout-btn");
 const zmetricsXLink       = document.getElementById("zmetrics-x-link");
+const exclusivePanels     = Array.from(
+  document.querySelectorAll("[data-exclusive-panel]")
+);
 
 // ========= STATE =========
 let enabledCoinIds = BASE_COINS.map(c => c.id);
@@ -64,6 +67,7 @@ let customCoins    = [];
 let deletedBaseIds = [];
 let coinOrder      = [];
 let lastData       = null;
+let activePanelId  = null;
 
 // Auth state
 let authToken = null;
@@ -181,6 +185,21 @@ function setLoginLoading(isLoading) {
   loginBtn.textContent = isLoading ? "Logging in…" : "Log in";
 }
 
+function setActivePanel(panelId) {
+  activePanelId = panelId;
+
+  exclusivePanels.forEach((panel) => {
+    const shouldShow = panel.id === activePanelId;
+    panel.classList.toggle("hidden", !shouldShow);
+  });
+}
+
+function togglePanel(panelId) {
+  if (!panelId) return;
+  const nextPanelId = activePanelId === panelId ? null : panelId;
+  setActivePanel(nextPanelId);
+}
+
 // ========= AUTH HELPERS (for future use) =========
 /**
  * Returns a promise resolving to { token, email } or { token: null, email: null }.
@@ -258,20 +277,20 @@ if (refreshBtn) {
 // Settings toggle
 if (settingsBtn) {
   settingsBtn.addEventListener("click", () => {
-    settingsPanel.classList.toggle("hidden");
+    togglePanel(settingsPanel?.id);
   });
 }
 
 if (settingsClose) {
   settingsClose.addEventListener("click", () => {
-    settingsPanel.classList.add("hidden");
+    setActivePanel(null);
   });
 }
 
 // Account dropdown toggle
 if (accountToggleBtn && accountPanel) {
   accountToggleBtn.addEventListener("click", () => {
-    accountPanel.classList.toggle("hidden");
+    togglePanel(accountPanel.id);
   });
 }
 
