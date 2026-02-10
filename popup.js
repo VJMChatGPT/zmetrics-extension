@@ -57,9 +57,13 @@ const loginErrorEl        = document.getElementById("login-error");
 const accountEmailEl      = document.getElementById("account-email");
 const logoutBtn           = document.getElementById("logout-btn");
 const zmetricsXLink       = document.getElementById("zmetrics-x-link");
-const exclusivePanels     = Array.from(
-  document.querySelectorAll("[data-exclusive-panel]")
-);
+const exclusivePanels     = [
+  ...new Set([
+    ...Array.from(document.querySelectorAll("[data-exclusive-panel]")),
+    settingsPanel,
+    accountPanel
+  ])
+].filter(Boolean);
 
 // ========= STATE =========
 let enabledCoinIds = BASE_COINS.map(c => c.id);
@@ -319,7 +323,18 @@ if (searchInput) {
 // Shortcut change: opens Chrome shortcut settings
 if (shortcutChangeBtn) {
   shortcutChangeBtn.addEventListener("click", () => {
-    window.open("chrome://extensions/shortcuts", "_blank");
+    const shortcutsUrl = "chrome://extensions/shortcuts";
+
+    if (chrome.tabs && chrome.tabs.create) {
+      chrome.tabs.create({ url: shortcutsUrl }, () => {
+        if (chrome.runtime.lastError) {
+          window.location.href = shortcutsUrl;
+        }
+      });
+      return;
+    }
+
+    window.location.href = shortcutsUrl;
   });
 }
 
