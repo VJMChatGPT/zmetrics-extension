@@ -12,7 +12,8 @@
   },
   "permissions": [
     "storage",
-    "windows"
+    "windows",
+    "tabs"
   ],
   "host_permissions": [
     "https://api.coingecko.com/*",

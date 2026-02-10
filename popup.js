@@ -255,11 +255,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (shortcutDisplay && chrome.commands && chrome.commands.getAll) {
         chrome.commands.getAll((commands) => {
-          const cmd = commands.find(c => c.name === "open_window_popup");
+          const cmd = commands.find((c) => c.name === "open_window_popup");
           if (cmd && cmd.shortcut) {
             shortcutDisplay.textContent = cmd.shortcut;
           } else {
-            shortcutDisplay.textContent = "Not set";
+            shortcutDisplay.textContent = "Ctrl + Shift + Z / Command + Shift + Z";
           }
         });
       }
@@ -323,18 +323,7 @@ if (searchInput) {
 // Shortcut change: opens Chrome shortcut settings
 if (shortcutChangeBtn) {
   shortcutChangeBtn.addEventListener("click", () => {
-    const shortcutsUrl = "chrome://extensions/shortcuts";
-
-    if (chrome.tabs && chrome.tabs.create) {
-      chrome.tabs.create({ url: shortcutsUrl }, () => {
-        if (chrome.runtime.lastError) {
-          window.location.href = shortcutsUrl;
-        }
-      });
-      return;
-    }
-
-    window.location.href = shortcutsUrl;
+    chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
   });
 }
 
