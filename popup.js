@@ -256,13 +256,13 @@ if (refreshBtn) {
 }
 
 // Settings toggle
-if (settingsBtn) {
+if (settingsBtn && settingsPanel) {
   settingsBtn.addEventListener("click", () => {
     settingsPanel.classList.toggle("hidden");
   });
 }
 
-if (settingsClose) {
+if (settingsClose && settingsPanel) {
   settingsClose.addEventListener("click", () => {
     settingsPanel.classList.add("hidden");
   });
