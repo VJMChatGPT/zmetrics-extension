@@ -26,16 +26,21 @@
     </div>
 
     <!-- ACCOUNT DROPDOWN (secondary, user tab style) -->
-    <div id="account-panel" class="account-panel hidden" data-exclusive-panel>
+    <div id="account-panel" class="account-panel panel-surface hidden" data-exclusive-panel>
       <!-- Logged out state -->
       <div id="account-logged-out">
-        <div class="account-title">Account</div>
+        <div class="panel-header">
+          <div class="panel-title">Account</div>
+          <div class="panel-subtitle">Sign in to sync your ZMetrics preferences.</div>
+        </div>
+        <label class="field-label" for="login-email">Email</label>
         <input
           type="email"
           id="login-email"
           placeholder="Email"
           autocomplete="email"
         />
+        <label class="field-label" for="login-password">Password</label>
         <input
           type="password"
           id="login-password"
@@ -51,7 +56,10 @@
 
       <!-- Logged in state -->
       <div id="account-logged-in">
-        <div class="account-title">Account</div>
+        <div class="panel-header">
+          <div class="panel-title">Account</div>
+          <div class="panel-subtitle">Manage your current session.</div>
+        </div>
         <div class="account-email-wrapper">
           Signed in as
           <span id="account-email" class="account-email"></span>
@@ -61,12 +69,16 @@
     </div>
 
     <!-- SETTINGS PANEL -->
-    <div id="settings-panel" class="settings-panel hidden" data-exclusive-panel>
+    <div id="settings-panel" class="settings-panel panel-surface hidden" data-exclusive-panel>
       <button id="settings-close-btn" class="settings-close-icon" aria-label="Close settings panel" type="button">×</button>
-      <div class="settings-title">Settings</div>
+      <div class="panel-header">
+        <div class="panel-title">Options</div>
+        <div class="panel-subtitle">Customize assets, shortcuts, and behavior.</div>
+      </div>
 
       <!-- ASSETS SECTION -->
-      <div class="settings-subtitle">Assets</div>
+      <div class="panel-section">
+        <div class="panel-section-title">Assets</div>
 
       <div class="settings-search">
         <input id="search-input" placeholder="Search coin…" />
@@ -76,11 +88,12 @@
       <div id="search-results" class="search-results"></div>
 
       <div id="settings-coins" class="settings-coins-list"></div>
+      </div>
 
       <!-- SHORTCUT SECTION -->
-      <div class="shortcut-section">
+      <div class="shortcut-section panel-section">
+        <div class="panel-section-title">Keyboard shortcut</div>
         <div class="shortcut-header">
-          <span class="shortcut-label">Keyboard shortcut</span>
           <span id="shortcut-display" class="shortcut-display">Ctrl + Shift + Z / Command + Shift + Z</span>
         </div>
         <button id="shortcut-change-btn" class="shortcut-change-btn">

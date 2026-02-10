@@ -9,6 +9,11 @@
   --text-secondary: #a1a6b8;
   --accent: #00c2ff;
   --accent-soft: rgba(0, 194, 255, 0.16);
+  --panel-bg: radial-gradient(circle at 0% 0%, #151a2c 0%, #0b0f1f 40%, #090c1a 100%);
+  --panel-border: rgba(49, 58, 92, 0.9);
+  --field-bg: #0d1020;
+  --field-border: #262c3b;
+  --field-border-hover: rgba(0, 194, 255, 0.5);
   --up: #41c77a;
   --down: #ff6b6b;
 }
@@ -125,46 +130,86 @@ body {
   box-shadow: 0 0 0 1px var(--accent-soft);
 }
 
+/* SHARED PANEL SYSTEM */
+.panel-surface {
+  background: var(--panel-bg);
+  border-radius: 14px;
+  padding: 12px;
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.7);
+  font-size: 11px;
+}
+
+.panel-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.panel-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.panel-subtitle {
+  color: var(--text-secondary);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.panel-section {
+  margin-top: 10px;
+}
+
+.panel-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.field-label {
+  color: var(--text-secondary);
+  font-size: 10px;
+  margin: 2px 2px -2px;
+}
+
 /* ACCOUNT PANEL (dropdown, secondary) */
 .account-panel {
   position: absolute;
   top: 38px;
   right: 10px;
-  width: 230px;
-  background: radial-gradient(circle at 0% 0%, #151a2c 0%, #0b0f1f 40%, #090c1a 100%);
-  border-radius: 14px;
-  padding: 8px 9px 9px;
-  border: 1px solid rgba(49, 58, 92, 0.9);
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.7);
-  font-size: 11px;
+  width: 248px;
   z-index: 20;
-}
-
-.account-title {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  margin-bottom: 6px;
 }
 
 /* Logged-out state */
 #account-logged-out {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
 }
 
 .account-panel input[type="email"],
 .account-panel input[type="password"] {
   width: 100%;
-  background: #0d1020;
-  border: 1px solid #262c3b;
+  background: var(--field-bg);
+  border: 1px solid var(--field-border);
   border-radius: 999px;
-  padding: 5px 9px;
+  padding: 6px 10px;
   font-size: 11px;
   color: var(--text-primary);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.account-panel input[type="email"]:focus,
+.account-panel input[type="password"]:focus,
+#search-input:focus {
+  outline: none;
+  border-color: var(--field-border-hover);
+  box-shadow: 0 0 0 2px var(--accent-soft);
 }
 
 .account-panel input::placeholder {
@@ -178,7 +223,7 @@ body {
   color: #050711;
   border: none;
   border-radius: 999px;
-  padding: 5px 10px;
+  padding: 6px 10px;
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
@@ -205,8 +250,8 @@ body {
   background: transparent;
   color: var(--text-secondary);
   border-radius: 999px;
-  border: 1px solid #2b3044;
-  padding: 4px 10px;
+  border: 1px solid var(--field-border);
+  padding: 6px 10px;
   font-size: 10px;
   cursor: pointer;
   margin-top: 1px;
@@ -231,7 +276,7 @@ body {
 #account-logged-in {
   display: none;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .account-email-wrapper {
@@ -251,7 +296,7 @@ body {
   color: var(--text-primary);
   border-radius: 999px;
   border: 1px solid #343a4c;
-  padding: 4px 10px;
+  padding: 6px 10px;
   font-size: 11px;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
@@ -374,12 +419,7 @@ body {
 /* SETTINGS PANEL */
 .settings-panel {
   position: relative;
-  background: rgba(10, 13, 27, 0.96);
-  border-radius: 14px;
-  padding: 8px 9px 9px;
   margin-bottom: 6px;
-  border: 1px solid rgba(49, 58, 92, 0.85);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.55);
 }
 
 .settings-close-icon {
@@ -412,18 +452,8 @@ body {
   display: none;
 }
 
-.settings-title {
-  font-size: 12px;
-  font-weight: 600;
-  margin: 2px 28px 6px 0;
-  color: var(--text-secondary);
-}
-
-.settings-subtitle {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  margin: 4px 0;
+.settings-panel .panel-header {
+  margin-right: 28px;
 }
 
 /* SEARCH */
@@ -435,10 +465,10 @@ body {
 
 #search-input {
   flex: 1;
-  background: #0d1020;
-  border: 1px solid #262c3b;
+  background: var(--field-bg);
+  border: 1px solid var(--field-border);
   border-radius: 999px;
-  padding: 4px 10px;
+  padding: 6px 10px;
   font-size: 11px;
   color: var(--text-primary);
 }
@@ -450,11 +480,17 @@ body {
 #search-btn {
   background: #151a29;
   color: var(--text-primary);
-  border: 1px solid #262c3b;
+  border: 1px solid var(--field-border);
   border-radius: 999px;
-  padding: 3px 10px;
+  padding: 6px 10px;
   font-size: 11px;
   cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+#search-btn:hover {
+  background: #1e2436;
+  border-color: var(--accent);
 }
 
 /* SEARCH RESULTS */
@@ -507,7 +543,7 @@ body {
 .search-result-action button {
   background: #151a29;
   color: var(--text-primary);
-  border: 1px solid #262c3b;
+  border: 1px solid var(--field-border);
   border-radius: 999px;
   padding: 2px 8px;
   font-size: 10px;
@@ -601,21 +637,15 @@ body {
 
 /* SHORTCUT SETTINGS */
 .shortcut-section {
-  margin-top: 12px;
-  padding-top: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
   border-top: 1px solid rgba(255,255,255,0.06);
 }
 
 .shortcut-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 4px;
-}
-
-.shortcut-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-secondary);
 }
 
 .shortcut-display {
