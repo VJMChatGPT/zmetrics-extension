@@ -275,13 +275,13 @@ if (refreshBtn) {
 }
 
 // Settings toggle
-if (settingsBtn) {
+if (settingsBtn && settingsPanel) {
   settingsBtn.addEventListener("click", () => {
     togglePanel(settingsPanel?.id);
   });
 }
 
-if (settingsClose) {
+if (settingsClose && settingsPanel) {
   settingsClose.addEventListener("click", () => {
     setActivePanel(null);
   });
