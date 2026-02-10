@@ -322,6 +322,41 @@ body {
   opacity: 0.9;
 }
 
+
+.zm-social-footer {
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.zm-social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  color: #7e859a;
+  font-size: 11px;
+  padding: 2px 0;
+  cursor: pointer;
+  opacity: 0.78;
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+.zm-social-link:hover {
+  color: #b8bfd3;
+  opacity: 1;
+}
+
+.zm-x-icon {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.zm-x-handle {
+  line-height: 1;
+}
+
 /* SETTINGS PANEL */
 .settings-panel {
   background: rgba(10, 13, 27, 0.96);
