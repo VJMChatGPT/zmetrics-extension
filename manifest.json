@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "ZMetrics",
+  "version": "1.4.1",
+  "description": "Minimal crypto price tracker in a compact popup and floating window.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "ZMetrics"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "storage",
+    "windows"
+  ],
+  "host_permissions": [
+    "https://api.coingecko.com/*",
+    "https://zmetrics.net/*"
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "commands": {
+    "open_window_popup": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Z",
+        "mac": "Command+Shift+Z"
+      },
+      "description": "Toggle the ZMetrics floating window"
+    }
+  }
+}
