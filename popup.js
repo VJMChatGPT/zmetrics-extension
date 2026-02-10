@@ -319,7 +319,18 @@ if (searchInput) {
 // Shortcut change: opens Chrome shortcut settings
 if (shortcutChangeBtn) {
   shortcutChangeBtn.addEventListener("click", () => {
-    window.open("chrome://extensions/shortcuts", "_blank");
+    const shortcutsUrl = "chrome://extensions/shortcuts";
+
+    if (chrome.tabs && chrome.tabs.create) {
+      chrome.tabs.create({ url: shortcutsUrl }, () => {
+        if (chrome.runtime.lastError) {
+          window.location.href = shortcutsUrl;
+        }
+      });
+      return;
+    }
+
+    window.location.href = shortcutsUrl;
   });
 }
 
