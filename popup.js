@@ -57,9 +57,13 @@ const loginErrorEl        = document.getElementById("login-error");
 const accountEmailEl      = document.getElementById("account-email");
 const logoutBtn           = document.getElementById("logout-btn");
 const zmetricsXLink       = document.getElementById("zmetrics-x-link");
-const exclusivePanels     = Array.from(
-  document.querySelectorAll("[data-exclusive-panel]")
-);
+const exclusivePanels     = [
+  ...new Set([
+    ...Array.from(document.querySelectorAll("[data-exclusive-panel]")),
+    settingsPanel,
+    accountPanel
+  ])
+].filter(Boolean);
 
 // ========= STATE =========
 let enabledCoinIds = BASE_COINS.map(c => c.id);
