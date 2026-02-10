@@ -56,6 +56,7 @@ const signupBtn           = document.getElementById("signup-btn");
 const loginErrorEl        = document.getElementById("login-error");
 const accountEmailEl      = document.getElementById("account-email");
 const logoutBtn           = document.getElementById("logout-btn");
+const zmetricsXLink       = document.getElementById("zmetrics-x-link");
 
 // ========= STATE =========
 let enabledCoinIds = BASE_COINS.map(c => c.id);
@@ -343,6 +344,15 @@ if (signupBtn) {
   signupBtn.addEventListener("click", () => {
     chrome.tabs.create({
       url: "https://zmetrics.net/signup?source=extension"
+    });
+  });
+}
+
+
+if (zmetricsXLink) {
+  zmetricsXLink.addEventListener("click", () => {
+    chrome.tabs.create({
+      url: "https://x.com/zmetrics_net"
     });
   });
 }
