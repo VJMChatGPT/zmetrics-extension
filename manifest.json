@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "ZMetrics",
-  "version": "1.4.1",
+  "name": "ZMetrics – Crypto Price Tracker",
+  "version": "1.4.2",
   "description": "Minimal crypto price tracker in a compact popup and floating window.",
   "action": {
     "default_popup": "popup.html",
-    "default_title": "ZMetrics"
+    "default_title": "ZMetrics – Crypto Price Tracker"
   },
   "background": {
     "service_worker": "background.js"
