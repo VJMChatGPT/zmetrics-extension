@@ -423,7 +423,7 @@ if (signupBtn) {
 if (viewPlansBtn) {
   viewPlansBtn.addEventListener("click", () => {
     chrome.tabs.create({
-      url: "https://zmetrics.net/pricing"
+      url: "https://zmetrics.net/#piercing"
     });
   });
 }
