@@ -456,6 +456,34 @@ body {
   margin-right: 28px;
 }
 
+.currency-section {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.settings-select-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.settings-select {
+  width: 100%;
+  background: var(--field-bg);
+  border: 1px solid var(--field-border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: var(--text-primary);
+}
+
+.settings-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
 /* SEARCH */
 .settings-search {
   display: flex;
