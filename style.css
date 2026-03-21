@@ -363,6 +363,15 @@ body {
   color: var(--text-primary);
 }
 
+.account-close-icon {
+  top: 8px;
+  right: 8px;
+}
+
+.account-panel .panel-header {
+  margin-right: 28px;
+}
+
 .settings-title {
   font-size: 12px;
   font-weight: 600;

@@ -48,6 +48,7 @@ const currencySelect    = document.getElementById("currency-select");
 // Account/auth elements
 const accountPanel        = document.getElementById("account-panel");
 const accountToggleBtn    = document.getElementById("account-toggle-btn");
+const accountCloseBtn     = document.getElementById("account-close-btn");
 const accountLoggedOut    = document.getElementById("account-logged-out");
 const accountLoggedIn     = document.getElementById("account-logged-in");
 const loginEmailInput     = document.getElementById("login-email");
@@ -332,6 +333,12 @@ if (settingsClose && settingsPanel) {
 if (accountToggleBtn && accountPanel) {
   accountToggleBtn.addEventListener("click", () => {
     togglePanel(accountPanel.id);
+  });
+}
+
+if (accountCloseBtn && accountPanel) {
+  accountCloseBtn.addEventListener("click", () => {
+    setActivePanel(null);
   });
 }
 
