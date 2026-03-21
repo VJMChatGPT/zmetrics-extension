@@ -43,6 +43,7 @@ const searchBtn         = document.getElementById("search-btn");
 const searchResults     = document.getElementById("search-results");
 const shortcutDisplay   = document.getElementById("shortcut-display");
 const shortcutChangeBtn = document.getElementById("shortcut-change-btn");
+const currencySelect    = document.getElementById("currency-select");
 
 // Account/auth elements
 const accountPanel        = document.getElementById("account-panel");
@@ -70,6 +71,7 @@ let enabledCoinIds = BASE_COINS.map(c => c.id);
 let customCoins    = [];
 let deletedBaseIds = [];
 let coinOrder      = [];
+let selectedCurrency = "usd";
 let lastData       = null;
 let activePanelId  = null;
 
@@ -233,6 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
       customCoins: [],
       deletedBaseIds: [],
       coinOrder: [],
+      selectedCurrency: "usd",
       zmetricsToken: null,
       zmetricsEmail: null
     },
@@ -243,11 +246,15 @@ document.addEventListener("DOMContentLoaded", () => {
       customCoins    = Array.isArray(res.customCoins) ? res.customCoins : [];
       deletedBaseIds = Array.isArray(res.deletedBaseIds) ? res.deletedBaseIds : [];
       coinOrder      = Array.isArray(res.coinOrder) ? res.coinOrder : [];
+      selectedCurrency = res.selectedCurrency === "eur" ? "eur" : "usd";
 
       authToken = res.zmetricsToken || null;
       authEmail = res.zmetricsEmail || null;
 
       syncCoinOrderWithCurrentCoins();
+      if (currencySelect) {
+        currencySelect.value = selectedCurrency;
+      }
       renderSettingsList();
       renderAuthState();
       fetchPrices();
@@ -324,6 +331,18 @@ if (searchInput) {
 if (shortcutChangeBtn) {
   shortcutChangeBtn.addEventListener("click", () => {
     chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
+  });
+}
+
+// Currency selector
+if (currencySelect) {
+  currencySelect.addEventListener("change", () => {
+    selectedCurrency = currencySelect.value === "eur" ? "eur" : "usd";
+    chrome.storage.sync.set({
+      selectedCurrency
+    }, () => {
+      fetchPrices();
+    });
   });
 }
 
@@ -468,7 +487,7 @@ async function fetchPrices() {
     const idsParam = activeList.map(c => c.id).join(",");
     const url =
       COINGECKO_MARKETS_URL +
-      `?vs_currency=usd&ids=${idsParam}&price_change_percentage=24h`;
+      `?vs_currency=${selectedCurrency}&ids=${idsParam}&price_change_percentage=24h`;
 
     const res = await fetch(url);
     if (!res.ok) throw new Error("HTTP " + res.status);
@@ -600,6 +619,9 @@ function addCustomCoinFromSearch(coin) {
     { customCoins, enabledCoinIds, deletedBaseIds, coinOrder },
     () => {
       syncCoinOrderWithCurrentCoins();
+      if (currencySelect) {
+        currencySelect.value = selectedCurrency;
+      }
       renderSettingsList();
       fetchPrices();
       searchResults.innerHTML =
@@ -625,6 +647,9 @@ function removeCoin(id) {
     { customCoins, enabledCoinIds, deletedBaseIds, coinOrder },
     () => {
       syncCoinOrderWithCurrentCoins();
+      if (currencySelect) {
+        currencySelect.value = selectedCurrency;
+      }
       renderSettingsList();
       renderTable();
     }
@@ -780,26 +805,32 @@ function onToggleCoin(e) {
 }
 
 // ========= FORMAT HELPERS =========
+function getCurrencySymbol() {
+  return selectedCurrency === "eur" ? "€" : "$";
+}
+
 function formatPrice(value) {
   if (typeof value !== "number") return "—";
+  const symbol = getCurrencySymbol();
   if (value >= 1000) {
-    return "$" + value.toLocaleString(undefined, {
+    return symbol + value.toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
   }
-  if (value >= 1) return "$" + value.toFixed(2);
-  if (value >= 0.01) return "$" + value.toFixed(4);
-  return "$" + value.toPrecision(3);
+  if (value >= 1) return symbol + value.toFixed(2);
+  if (value >= 0.01) return symbol + value.toFixed(4);
+  return symbol + value.toPrecision(3);
 }
 
 function formatMarketCap(value) {
   if (typeof value !== "number") return "—";
-  if (value >= 1e12) return "$" + (value / 1e12).toFixed(2) + "T";
-  if (value >= 1e9)  return "$" + (value / 1e9).toFixed(2) + "B";
-  if (value >= 1e6)  return "$" + (value / 1e6).toFixed(2) + "M";
-  if (value >= 1e3)  return "$" + (value / 1e3).toFixed(2) + "K";
-  return "$" + value.toFixed(0);
+  const symbol = getCurrencySymbol();
+  if (value >= 1e12) return symbol + (value / 1e12).toFixed(2) + "T";
+  if (value >= 1e9)  return symbol + (value / 1e9).toFixed(2) + "B";
+  if (value >= 1e6)  return symbol + (value / 1e6).toFixed(2) + "M";
+  if (value >= 1e3)  return symbol + (value / 1e3).toFixed(2) + "K";
+  return symbol + value.toFixed(0);
 }
 
 function formatChange(change) {
