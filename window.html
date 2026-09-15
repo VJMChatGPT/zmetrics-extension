@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ZMetrics — Window</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- HEADER -->
+    <div class="zm-header">
+      <div class="zm-title">
+        <img src="icons/zmetrics-logo.png"
+             class="zm-logo"
+             alt="ZMetrics Logo">
+        <span class="zm-beta-badge">Beta</span>
+      </div>
+
+      <div class="zm-header-actions">
+        <button id="refresh-btn">↻</button>
+        <button id="settings-btn">⚙</button>
+        <button id="account-toggle-btn">👤</button>
+      </div>
+    </div>
+
+    <div class="plan-status" aria-live="polite">
+      <div id="plan-label" class="plan-label">Plan: Free</div>
+      <div class="plan-upgrade-text">Want to upgrade your plan?</div>
+      <button id="view-plans-btn" class="plan-upgrade-btn" type="button">
+        View plans on zmetrics.net
+      </button>
+    </div>
+
+    <!-- ACCOUNT DROPDOWN (same as popup) -->
+    <div id="account-panel" class="account-panel panel-surface hidden" data-exclusive-panel>
+      <button id="account-close-btn" class="settings-close-icon account-close-icon" aria-label="Close account panel" type="button">×</button>
+      <!-- Logged out state -->
+      <div id="account-logged-out">
+        <div class="panel-header">
+          <div class="panel-title">Account</div>
+          <div class="panel-subtitle">Sign in to sync your ZMetrics preferences.</div>
+        </div>
+        <label class="field-label" for="login-email">Email</label>
+        <input
+          type="email"
+          id="login-email"
+          placeholder="Email"
+          autocomplete="email"
+        />
+        <label class="field-label" for="login-password">Password</label>
+        <input
+          type="password"
+          id="login-password"
+          placeholder="Password"
+          autocomplete="current-password"
+        />
+        <button id="login-btn">Log in</button>
+        <button id="signup-btn" class="account-secondary-btn">
+          Sign up on zmetrics.net
+        </button>
+        <div id="login-error" class="account-error"></div>
+      </div>
+
+      <!-- Logged in state -->
+      <div id="account-logged-in">
+        <div class="panel-header">
+          <div class="panel-title">Account</div>
+          <div class="panel-subtitle">Manage your current session.</div>
+        </div>
+        <div class="account-email-wrapper">
+          Signed in as
+          <span id="account-email" class="account-email"></span>
+        </div>
+        <button id="logout-btn">Log out</button>
+      </div>
+    </div>
+
+    <!-- SETTINGS PANEL -->
+    <div id="settings-panel" class="settings-panel panel-surface hidden" data-exclusive-panel>
+      <button id="settings-close-btn" class="settings-close-icon" aria-label="Close settings panel" type="button">×</button>
+      <div class="panel-header">
+        <div class="panel-title">Options</div>
+        <div class="panel-subtitle">Customize assets, shortcuts, and behavior.</div>
+      </div>
+
+      <!-- ASSETS SECTION -->
+      <div class="panel-section">
+        <div class="panel-section-title">Assets</div>
+
+      <div class="settings-search">
+        <input id="search-input" placeholder="Search coin…" />
+        <button id="search-btn">Search</button>
+      </div>
+
+      <div id="search-results" class="search-results"></div>
+
+      <div id="settings-coins" class="settings-coins-list"></div>
+      </div>
+
+      <!-- CURRENCY SECTION -->
+      <div class="currency-section panel-section">
+        <div class="panel-section-title">Currency</div>
+        <label class="settings-select-label" for="currency-select">Display prices in</label>
+        <select id="currency-select" class="settings-select">
+          <option value="usd">US Dollar (USD)</option>
+          <option value="eur">Euro (EUR)</option>
+        </select>
+      </div>
+
+      <!-- SHORTCUT SECTION -->
+      <div class="shortcut-section panel-section">
+        <div class="panel-section-title">Keyboard shortcut</div>
+        <div class="shortcut-header">
+          <span id="shortcut-display" class="shortcut-display">Ctrl+Shift+Z</span>
+        </div>
+        <button id="shortcut-change-btn" class="shortcut-change-btn">
+          Change shortcut in Chrome…
+        </button>
+        <div class="shortcut-hint">
+          This opens Chrome’s extension shortcut settings so you can choose the key combo to toggle the floating window.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="zm-table">
+      <div class="zm-table-header">
+        <div>Asset</div>
+        <div>Market Cap</div>
+        <div>Price</div>
+        <div>24h %</div>
+      </div>
+      <div id="coins-list" class="zm-table-body"></div>
+    </div>
+
+    <div id="update-time" class="timestamp"></div>
+
+    <div class="zm-social-footer">
+      <button id="zmetrics-x-link" class="zm-social-link" type="button" aria-label="Open @zmetrics on X">
+        <span class="zm-x-icon" aria-hidden="true">𝕏</span>
+        <span class="zm-x-handle">@zmetrics</span>
+      </button>
+    </div>
+
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
