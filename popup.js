@@ -1,26 +1,4 @@
-// ========= BASE COINS =========
-const BASE_COINS = [
-  {
-    id: "bitcoin",
-    symbol: "BTC",
-    icon: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png"
-  },
-  {
-    id: "ethereum",
-    symbol: "ETH",
-    icon: "https://assets.coingecko.com/coins/images/279/small/ethereum.png"
-  },
-  {
-    id: "ripple",
-    symbol: "XRP",
-    icon: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png"
-  },
-  {
-    id: "solana",
-    symbol: "SOL",
-    icon: "https://assets.coingecko.com/coins/images/4128/small/solana.png"
-  }
-];
+import { BASE_COINS, getAllCoins as getAllCoinsLogic, getActiveCoins, marketsById, formatPrice as formatPriceLogic, formatMarketCap as formatMarketCapLogic, formatChange as formatChangeLogic } from "./extension-logic.js";
 
 const FALLBACK_ICON = "icons/icon32.png";
 const COINGECKO_MARKETS_URL =
@@ -104,14 +82,7 @@ function syncCoinOrderWithCurrentCoins() {
 }
 
 function getAllCoins() {
-  const unordered = buildAllCoinsUnordered();
-  const map = new Map(unordered.map(c => [c.id, c]));
-
-  syncCoinOrderWithCurrentCoins();
-
-  return coinOrder
-    .map(id => map.get(id))
-    .filter(Boolean);
+  return getAllCoinsLogic(BASE_COINS, customCoins, deletedBaseIds, coinOrder);
 }
 
 // ========= DRAG & DROP FOR SETTINGS LIST =========
@@ -518,7 +489,7 @@ async function handleLoginSubmit() {
 // ========= PRICE FETCHING =========
 async function fetchPrices() {
   const allCoins   = getAllCoins();
-  const activeList = allCoins.filter(c => enabledCoinIds.includes(c.id));
+  const activeList = getActiveCoins(allCoins, enabledCoinIds);
 
   if (activeList.length === 0) {
     list.innerHTML =
@@ -537,11 +508,7 @@ async function fetchPrices() {
     if (!res.ok) throw new Error("HTTP " + res.status);
 
     const markets = await res.json();
-    const map = {};
-    markets.forEach(m => {
-      if (m && m.id) map[m.id] = m;
-    });
-    lastData = map;
+    lastData = marketsById(markets);
 
     renderTable();
   } catch (err) {
@@ -706,7 +673,7 @@ function renderTable() {
   if (!lastData) return;
 
   const allCoins   = getAllCoins();
-  const activeList = allCoins.filter(c => enabledCoinIds.includes(c.id));
+  const activeList = getActiveCoins(allCoins, enabledCoinIds);
 
   if (activeList.length === 0) {
     list.innerHTML =
@@ -854,32 +821,13 @@ function getCurrencySymbol() {
 }
 
 function formatPrice(value) {
-  if (typeof value !== "number") return "—";
-  const symbol = getCurrencySymbol();
-  if (value >= 1000) {
-    return symbol + value.toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-  }
-  if (value >= 1) return symbol + value.toFixed(2);
-  if (value >= 0.01) return symbol + value.toFixed(4);
-  return symbol + value.toPrecision(3);
+  return formatPriceLogic(value, selectedCurrency);
 }
 
 function formatMarketCap(value) {
-  if (typeof value !== "number") return "—";
-  const symbol = getCurrencySymbol();
-  if (value >= 1e12) return symbol + (value / 1e12).toFixed(2) + "T";
-  if (value >= 1e9)  return symbol + (value / 1e9).toFixed(2) + "B";
-  if (value >= 1e6)  return symbol + (value / 1e6).toFixed(2) + "M";
-  if (value >= 1e3)  return symbol + (value / 1e3).toFixed(2) + "K";
-  return symbol + value.toFixed(0);
+  return formatMarketCapLogic(value, selectedCurrency);
 }
 
 function formatChange(change) {
-  if (typeof change !== "number" || isNaN(change)) return "—";
-  const sign = change > 0 ? "+" : "";
-  const abs = Math.abs(change).toFixed(2);
-  return `${sign}${abs}%`;
+  return formatChangeLogic(change);
 }
