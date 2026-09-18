@@ -137,7 +137,6 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
-
 # Local browser automation/runtime artifacts
 output/playwright-runtime/node_modules/
 
