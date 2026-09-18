@@ -1,9 +1,18 @@
-// background.js — gestiona la ventana flotante de ZMetrics
+import {
+  TELEMETRY_FLUSH_MESSAGE,
+  TELEMETRY_SET_ENABLED_MESSAGE,
+  TELEMETRY_TRACK_MESSAGE,
+  createTelemetryManager
+} from "./telemetry.js";
+
+// background.js — gestiona la ventana flotante y la telemetría de ZMetrics
 
 const OPEN_WINDOW_COMMAND = "open_window_popup";
 const WINDOW_URL = chrome.runtime.getURL("window.html");
+const telemetry = createTelemetryManager();
 
 let popupWindowId = null;
+let toggleOperation = Promise.resolve();
 
 async function findExistingPopupWindowId() {
   if (popupWindowId !== null) {
@@ -50,6 +59,12 @@ async function togglePopupWindow() {
   });
 
   popupWindowId = typeof newWin.id === "number" ? newWin.id : null;
+  if (popupWindowId !== null) {
+    await telemetry.track("extension_open", {
+      surface: "floating_window",
+      trigger: "shortcut"
+    });
+  }
 }
 
 chrome.windows.onRemoved.addListener((windowId) => {
@@ -61,5 +76,47 @@ chrome.windows.onRemoved.addListener((windowId) => {
 chrome.commands.onCommand.addListener(async (command) => {
   if (command !== OPEN_WINDOW_COMMAND) return;
 
-  await togglePopupWindow();
+  toggleOperation = toggleOperation
+    .then(() => togglePopupWindow())
+    .catch(() => {});
+  await toggleOperation;
+});
+
+chrome.runtime.onInstalled.addListener(async (details) => {
+  if (details.reason === "install") {
+    await telemetry.track("install");
+  } else if (details.reason === "update") {
+    await telemetry.track("update", {
+      previous_version: details.previousVersion || "unknown"
+    });
+  }
+});
+
+chrome.runtime.onStartup.addListener(() => {
+  void telemetry.flush();
+});
+
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (message?.type === TELEMETRY_TRACK_MESSAGE) {
+    void telemetry.track(message.eventName, message.properties).then(() => {
+      sendResponse({ ok: true });
+    }).catch(() => {
+      sendResponse({ ok: false });
+    });
+    return true;
+  }
+
+  if (message?.type === TELEMETRY_FLUSH_MESSAGE) {
+    void telemetry.flush().then(() => sendResponse({ ok: true })).catch(() => sendResponse({ ok: false }));
+    return true;
+  }
+
+  if (message?.type === TELEMETRY_SET_ENABLED_MESSAGE) {
+    void telemetry.setEnabled(message.enabled === true)
+      .then(() => sendResponse({ ok: true }))
+      .catch(() => sendResponse({ ok: false }));
+    return true;
+  }
+
+  return false;
 });

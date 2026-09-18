@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test zmetrics-extension.test.js",
-    "test:watch": "node --test --watch zmetrics-extension.test.js",
-    "test:coverage": "node --test --experimental-test-coverage zmetrics-extension.test.js"
+    "test": "node --test zmetrics-extension.test.js telemetry.test.js background.test.js",
+    "test:watch": "node --test --watch zmetrics-extension.test.js telemetry.test.js background.test.js",
+    "test:coverage": "node --test --experimental-test-coverage zmetrics-extension.test.js telemetry.test.js background.test.js"
   }
 }

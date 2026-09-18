@@ -1,4 +1,5 @@
 import { BASE_COINS, getAllCoins as getAllCoinsLogic, getActiveCoins, marketsById, formatPrice as formatPriceLogic, formatMarketCap as formatMarketCapLogic, formatChange as formatChangeLogic } from "./extension-logic.js";
+import { getAnalyticsEnabled, getTelemetrySurface, setAnalyticsEnabled, trackEvent } from "./telemetry.js";
 
 const FALLBACK_ICON = "icons/icon32.png";
 const COINGECKO_MARKETS_URL =
@@ -22,6 +23,7 @@ const searchResults     = document.getElementById("search-results");
 const shortcutDisplay   = document.getElementById("shortcut-display");
 const shortcutChangeBtn = document.getElementById("shortcut-change-btn");
 const currencySelect    = document.getElementById("currency-select");
+const analyticsToggle   = document.getElementById("analytics-enabled");
 
 // Account/auth elements
 const accountPanel        = document.getElementById("account-panel");
@@ -230,6 +232,19 @@ if (chrome.storage?.onChanged) {
 
 // ========= INIT =========
 document.addEventListener("DOMContentLoaded", () => {
+  if (getTelemetrySurface() === "popup") {
+    void trackEvent("extension_open", {
+      surface: "popup",
+      trigger: "toolbar"
+    });
+  }
+
+  if (analyticsToggle) {
+    void getAnalyticsEnabled().then((enabled) => {
+      analyticsToggle.checked = enabled;
+    });
+  }
+
   chrome.storage.sync.get(
     {
       enabledCoinIds: BASE_COINS.map(c => c.id),
@@ -349,8 +364,17 @@ if (currencySelect) {
     chrome.storage.sync.set({
       selectedCurrency
     }, () => {
+      void trackEvent("currency_change", {
+        currency: selectedCurrency === "eur" ? "EUR" : "USD"
+      });
       fetchPrices();
     });
+  });
+}
+
+if (analyticsToggle) {
+  analyticsToggle.addEventListener("change", () => {
+    void setAnalyticsEnabled(analyticsToggle.checked);
   });
 }
 
@@ -510,9 +534,22 @@ async function fetchPrices() {
     const markets = await res.json();
     lastData = marketsById(markets);
 
+    void trackEvent("price_load", {
+      status: "success",
+      provider: "coingecko"
+    });
+
     renderTable();
   } catch (err) {
     console.error("Error fetching prices:", err);
+    void trackEvent("price_load", {
+      status: "error",
+      provider: "coingecko"
+    });
+    void trackEvent("client_error", {
+      error_code: "PRICE_FETCH_FAILED",
+      component: "prices"
+    });
 
     if (!lastData) {
       list.innerHTML =
@@ -635,6 +672,10 @@ function addCustomCoinFromSearch(coin) {
       }
       renderSettingsList();
       fetchPrices();
+      void trackEvent("watchlist_change", {
+        action: "add",
+        total_assets: getAllCoins().length
+      });
       searchResults.innerHTML =
         `<div class="search-info">Added ${newCoin.symbol} to your list.</div>`;
     }
@@ -663,6 +704,10 @@ function removeCoin(id) {
       }
       renderSettingsList();
       renderTable();
+      void trackEvent("watchlist_change", {
+        action: "remove",
+        total_assets: getAllCoins().length
+      });
     }
   );
 }
