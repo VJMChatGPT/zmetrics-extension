@@ -24,14 +24,14 @@ export function Navbar() {
 export function Footer() {
   return (
     <footer className="border-t border-border/60">
-      <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-10 md:flex-row md:items-center md:justify-between md:px-8">
-        <div className="flex flex-col gap-3">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-5 py-10 text-center md:px-8">
+        <div className="flex flex-col items-center gap-3">
           <Logo />
           <p className="text-sm text-muted-foreground">
             ZMetrics - Quick crypto tracking for Chrome.
           </p>
         </div>
-        <nav className="flex items-center gap-6 text-sm text-muted-foreground">
+        <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
           <Link to="/privacy" className="transition-colors hover:text-foreground">
             Privacy
           </Link>
