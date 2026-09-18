@@ -126,7 +126,7 @@ Main headline:
 
 Supporting text:
 
-“Live prices, market caps and 24h changes — always one click or shortcut away.”
+“Live prices, market caps and 24h changes, always one click or shortcut away.”
 
 Primary CTA:
 
@@ -264,7 +264,7 @@ Include:
 
 - short footer text such as:
 
-“ZMetrics — Quick crypto tracking for Chrome.”
+“ZMetrics - Quick crypto tracking for Chrome.”
 
 PAGES / ROUTES
 
@@ -336,7 +336,7 @@ Use placeholder CTA links where needed:
 
 Make the design easy to adapt later to real links and real screenshots.
 
-IMPORTANT — USE THE ATTACHED PRODUCT IMAGES
+IMPORTANT - USE THE ATTACHED PRODUCT IMAGES
 
 I have attached real screenshots of the ZMetrics Chrome extension.
 
@@ -376,7 +376,7 @@ Continue developing this project in the [Lovable editor](https://lovable.dev/pro
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Prefer working locally? You need Node.js and npm - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh
 git clone <this-repository-url>

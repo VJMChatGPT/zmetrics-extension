@@ -27,7 +27,7 @@ export function marketsById(markets) {
 }
 
 export function formatPrice(value, currency = "usd") {
-  if (typeof value !== "number") return "—";
+  if (typeof value !== "number") return "-";
   const symbol = currency === "eur" ? "€" : "$";
   if (value >= 1000) return symbol + value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   if (value >= 1) return symbol + value.toFixed(2);
@@ -36,7 +36,7 @@ export function formatPrice(value, currency = "usd") {
 }
 
 export function formatMarketCap(value, currency = "usd") {
-  if (typeof value !== "number") return "—";
+  if (typeof value !== "number") return "-";
   const symbol = currency === "eur" ? "€" : "$";
   if (value >= 1e12) return symbol + (value / 1e12).toFixed(2) + "T";
   if (value >= 1e9) return symbol + (value / 1e9).toFixed(2) + "B";
@@ -46,6 +46,6 @@ export function formatMarketCap(value, currency = "usd") {
 }
 
 export function formatChange(change) {
-  if (typeof change !== "number" || Number.isNaN(change)) return "—";
+  if (typeof change !== "number" || Number.isNaN(change)) return "-";
   return `${change > 0 ? "+" : ""}${Math.abs(change).toFixed(2)}%`;
 }

@@ -87,7 +87,7 @@ export function Hero() {
             Track crypto <span className="text-shine">without leaving</span> your tab.
           </h1>
           <p className="animate-rise mx-auto mt-6 max-w-xl text-lg text-muted-foreground [animation-delay:120ms]">
-            Live prices, market caps and 24h changes — always one click or shortcut away.
+            Live prices, market caps and 24h changes, always one click or shortcut away.
           </p>
           <div className="animate-rise mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row [animation-delay:220ms]">
             <ChromeButton size="lg" />

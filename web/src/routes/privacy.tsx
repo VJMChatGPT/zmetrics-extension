@@ -5,9 +5,9 @@ import { absoluteOgImageUrl, SITE_CONFIG } from "@/config/site";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy Policy — ZMetrics" },
+      { title: "Privacy Policy - ZMetrics" },
       { name: "description", content: "How the ZMetrics Chrome extension handles data." },
-      { property: "og:title", content: "Privacy Policy — ZMetrics" },
+      { property: "og:title", content: "Privacy Policy - ZMetrics" },
       { property: "og:description", content: "How the ZMetrics Chrome extension handles data." },
       { property: "og:url", content: `${SITE_CONFIG.siteUrl}/privacy` },
       { property: "og:image", content: absoluteOgImageUrl },

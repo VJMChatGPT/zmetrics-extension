@@ -78,7 +78,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ZMetrics — Quick crypto tracking for Chrome" },
+      { title: "ZMetrics - Quick crypto tracking for Chrome" },
       { name: "description", content: "Track crypto without leaving your tab." },
       { name: "author", content: "ZMetrics" },
       { property: "og:type", content: "website" },

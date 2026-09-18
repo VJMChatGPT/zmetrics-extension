@@ -117,8 +117,8 @@ Duplicate `event_id` values are ignored by the database primary key/upsert opera
 
 The function reads these environment variables only on the server:
 
-- `GA4_MEASUREMENT_ID` — expected value `G-LGCQP8HW2B`;
-- `GA4_API_SECRET` — already configured in the ZMetrics Supabase project; never place its value in this repository.
+- `GA4_MEASUREMENT_ID` - expected value `G-LGCQP8HW2B`;
+- `GA4_API_SECRET` - already configured in the ZMetrics Supabase project; never place its value in this repository.
 
 Supabase Edge Functions also need their normal project URL and service-role environment variables. Never expose the service role key or GA4 API secret in extension code.
 

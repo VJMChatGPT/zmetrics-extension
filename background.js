@@ -5,7 +5,7 @@ import {
   createTelemetryManager
 } from "./telemetry.js";
 
-// background.js — gestiona la ventana flotante y la telemetría de ZMetrics
+// background.js - gestiona la ventana flotante y la telemetría de ZMetrics
 
 const OPEN_WINDOW_COMMAND = "open_window_popup";
 const WINDOW_URL = chrome.runtime.getURL("window.html");

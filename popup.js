@@ -722,11 +722,11 @@ function renderTable() {
       </div>
 
       <div class="cell-marketcap">
-        ${mcap != null ? formatMarketCap(mcap) : "—"}
+        ${mcap != null ? formatMarketCap(mcap) : "-"}
       </div>
 
       <div class="cell-price">
-        ${price != null ? formatPrice(price) : "—"}
+        ${price != null ? formatPrice(price) : "-"}
       </div>
 
       <div class="cell-change ${direction}">

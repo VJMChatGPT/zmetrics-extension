@@ -22,10 +22,10 @@ test("marketsById ignores malformed market entries", () => {
 test("formatters handle currencies, magnitudes and missing values", () => {
   assert.equal(formatPrice(1234.5), "$" + (1234.5).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
   assert.equal(formatPrice(0.1234, "eur"), "€0.1234");
-  assert.equal(formatPrice(null), "—");
+  assert.equal(formatPrice(null), "-");
   assert.equal(formatMarketCap(2_500_000_000), "$2.50B");
   assert.equal(formatMarketCap(10, "eur"), "€10");
   assert.equal(formatChange(2.345), "+2.35%");
   assert.equal(formatChange(-1.2), "1.20%");
-  assert.equal(formatChange("bad"), "—");
+  assert.equal(formatChange("bad"), "-");
 });

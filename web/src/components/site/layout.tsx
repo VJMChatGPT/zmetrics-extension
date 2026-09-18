@@ -28,7 +28,7 @@ export function Footer() {
         <div className="flex flex-col gap-3">
           <Logo />
           <p className="text-sm text-muted-foreground">
-            ZMetrics — Quick crypto tracking for Chrome.
+            ZMetrics - Quick crypto tracking for Chrome.
           </p>
         </div>
         <nav className="flex items-center gap-6 text-sm text-muted-foreground">
