@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FcRouteImport } from './routes/fc'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FcRoute = FcRouteImport.update({
+  id: '/fc',
+  path: '/fc',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -25,27 +31,31 @@ const PrivacyRoute = PrivacyRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/fc': typeof FcRoute
   '/privacy': typeof PrivacyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/fc': typeof FcRoute
   '/privacy': typeof PrivacyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/fc': typeof FcRoute
   '/privacy': typeof PrivacyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/privacy'
+  fullPaths: '/' | '/fc' | '/privacy'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/privacy'
-  id: '__root__' | '/' | '/privacy'
+  to: '/' | '/fc' | '/privacy'
+  id: '__root__' | '/' | '/fc' | '/privacy'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FcRoute: typeof FcRoute
   PrivacyRoute: typeof PrivacyRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fc': {
+      id: '/fc'
+      path: '/fc'
+      fullPath: '/fc'
+      preLoaderRoute: typeof FcRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FcRoute: FcRoute,
   PrivacyRoute: PrivacyRoute,
 }
 export const routeTree = rootRouteImport
