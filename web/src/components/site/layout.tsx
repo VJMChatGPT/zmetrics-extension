@@ -11,9 +11,9 @@ export function Navbar() {
           <a href="/#features" className="transition-colors hover:text-foreground">
             Features
           </a>
-          <a href="/#privacy" className="transition-colors hover:text-foreground">
+          <Link to="/privacy" className="transition-colors hover:text-foreground">
             Privacy
-          </a>
+          </Link>
         </nav>
         <ChromeButton />
       </div>

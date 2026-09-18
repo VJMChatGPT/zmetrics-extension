@@ -6,7 +6,6 @@ import {
   Zap,
   Eye,
   Wind,
-  ShieldCheck,
   ArrowRight,
 } from "lucide-react";
 import { ChromeButton, Shortcut } from "./brand";
@@ -202,28 +201,22 @@ export function FeatureCustomize() {
   );
 }
 
-export function Privacy() {
+export function DemoVideo() {
   return (
-    <Section id="privacy" className="border-y border-border/60 bg-surface">
-      <div className="card-glass mx-auto max-w-3xl rounded-3xl p-8 text-center md:p-12">
-        <span className="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-primary">
-          <ShieldCheck className="h-6 w-6" />
-        </span>
-        <h2 className="text-3xl font-semibold md:text-4xl">Built with privacy in mind.</h2>
-        <p className="mx-auto mt-4 max-w-xl text-muted-foreground md:text-lg">
-          ZMetrics is designed to be useful without getting in your way. No noisy dashboards, no
-          unnecessary complexity.
-        </p>
-        <p className="mx-auto mt-6 max-w-lg rounded-xl bg-background/60 px-4 py-3 text-sm text-muted-foreground">
-          Anonymous product analytics may be used to improve the extension, without collecting
-          browsing history, wallets or personal data.
-        </p>
-        <Link
-          to="/privacy"
-          className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-foreground"
+    <Section id="demo" className="border-y border-border/60 bg-surface">
+      <div className="card-glass mx-auto max-w-5xl overflow-hidden rounded-3xl p-2 shadow-glow md:p-3">
+        <video
+          className="block w-full rounded-2xl"
+          autoPlay
+          controls
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          aria-label="ZMetrics extension demo"
         >
-          Read Privacy Policy <ArrowRight className="h-4 w-4" />
-        </Link>
+          <source src="/assets/zmetrics-demo/zmetrics-demo-horizontal.mp4" type="video/mp4" />
+        </video>
       </div>
     </Section>
   );
