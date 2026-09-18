@@ -120,7 +120,7 @@ export function FeatureTabs() {
   return (
     <Section id="features">
       <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
-        <div>
+        <div className="min-w-0">
           <Heading
             eyebrow="At a glance"
             title="Check the market without switching tabs."
@@ -135,7 +135,7 @@ export function FeatureTabs() {
             ]}
           />
         </div>
-        <BrowserMockup />
+        <BrowserMockup className="min-w-0" />
       </div>
     </Section>
   );
@@ -145,7 +145,7 @@ export function FeatureShortcut() {
   return (
     <Section className="border-y border-border/60 bg-surface">
       <div className="grid items-center gap-12 lg:grid-cols-2">
-        <div className="relative order-2 flex justify-center lg:order-1">
+        <div className="relative order-2 flex min-w-0 justify-center lg:order-1">
           <div className="glow-bg absolute inset-0 rounded-full blur-2xl" />
           <div className="relative flex w-full max-w-sm flex-col items-center gap-8">
             <div className="py-3 pl-3">
@@ -154,7 +154,7 @@ export function FeatureShortcut() {
             <FloatingWindow className="w-full animate-float" />
           </div>
         </div>
-        <div className="order-1 lg:order-2">
+        <div className="order-1 min-w-0 lg:order-2">
           <Heading
             eyebrow="Shortcut"
             title="One shortcut away."

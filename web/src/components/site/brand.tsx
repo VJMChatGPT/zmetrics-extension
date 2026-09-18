@@ -4,12 +4,18 @@ import { cn } from "@/lib/utils";
 
 export function Logo({ className }: { className?: string }) {
   return (
-    <Link to="/" className={cn("flex items-center gap-2", className)} aria-label="ZMetrics home">
-      <img src={SITE_CONFIG.assets.mark} alt="" className="h-7 w-7" width="128" height="128" />
+    <Link to="/" className={cn("flex items-center gap-1.5 sm:gap-2", className)} aria-label="ZMetrics home">
+      <img
+        src={SITE_CONFIG.assets.mark}
+        alt=""
+        className="h-6 w-6 sm:h-7 sm:w-7"
+        width="128"
+        height="128"
+      />
       <img
         src={SITE_CONFIG.assets.wordmark}
         alt="ZMetrics"
-        className="h-9 -ml-1 w-auto object-contain"
+        className="h-7 -ml-1 w-auto object-contain sm:h-9"
         width="2560"
         height="800"
       />
@@ -30,7 +36,7 @@ export function ChromeButton({
       target="_blank"
       rel="noreferrer"
       className={cn(
-        "group inline-flex items-center gap-2.5 rounded-full bg-primary font-semibold text-primary-foreground shadow-glow transition-all duration-300 hover:brightness-110 hover:shadow-glow hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+        "group inline-flex shrink-0 items-center gap-1.5 rounded-full bg-primary font-semibold text-primary-foreground shadow-glow transition-all duration-300 hover:brightness-110 hover:shadow-glow hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:gap-2.5",
         size === "lg" ? "px-7 py-3.5 text-base" : "px-5 py-2.5 text-sm",
         className,
       )}
