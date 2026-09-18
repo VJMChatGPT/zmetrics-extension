@@ -142,3 +142,6 @@ output/playwright-runtime/node_modules/
 
 # Rendered video exports (source assets remain tracked)
 video/out/
+
+# Local archive exports
+*.rar
