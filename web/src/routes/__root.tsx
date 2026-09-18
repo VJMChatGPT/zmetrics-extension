@@ -13,6 +13,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { absoluteOgImageUrl, SITE_CONFIG } from "../config/site";
 
+const GA4_MEASUREMENT_ID = "G-LGCQP8HW2B";
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -98,6 +100,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        src: `https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`,
+        async: true,
+      },
+      {
+        children: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${GA4_MEASUREMENT_ID}');
+        `,
       },
     ],
   }),
