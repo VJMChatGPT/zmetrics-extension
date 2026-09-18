@@ -108,8 +108,8 @@ export function Hero() {
             </span>
           </div>
         </div>
-        <div className="animate-rise mx-auto mt-16 max-w-4xl [animation-delay:420ms]">
-          <BrowserMockup />
+        <div className="animate-rise mx-auto mt-16 max-w-5xl [animation-delay:420ms]">
+          <ProductVideo />
         </div>
       </div>
     </section>
@@ -201,24 +201,22 @@ export function FeatureCustomize() {
   );
 }
 
-export function DemoVideo() {
+function ProductVideo() {
   return (
-    <Section id="demo" className="border-y border-border/60 bg-surface">
-      <div className="card-glass mx-auto max-w-5xl overflow-hidden rounded-3xl p-2 shadow-glow md:p-3">
-        <video
-          className="block w-full rounded-2xl"
-          autoPlay
-          controls
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          aria-label="ZMetrics extension demo"
-        >
-          <source src="/assets/zmetrics-demo/zmetrics-demo-horizontal.mp4" type="video/mp4" />
-        </video>
-      </div>
-    </Section>
+    <div className="card-glass overflow-hidden rounded-3xl p-2 shadow-glow md:p-3">
+      <video
+        className="block w-full rounded-2xl"
+        autoPlay
+        controls
+        loop
+        muted
+        playsInline
+        preload="metadata"
+        aria-label="ZMetrics extension demo"
+      >
+        <source src="/assets/zmetrics-demo/zmetrics-demo-horizontal.mp4" type="video/mp4" />
+      </video>
+    </div>
   );
 }
 

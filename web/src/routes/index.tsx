@@ -5,7 +5,6 @@ import {
   FeatureTabs,
   FeatureShortcut,
   FeatureCustomize,
-  DemoVideo,
   FinalCta,
 } from "@/components/site/sections";
 import { absoluteOgImageUrl, SITE_CONFIG } from "@/config/site";
@@ -40,7 +39,6 @@ function Index() {
       <FeatureTabs />
       <FeatureShortcut />
       <FeatureCustomize />
-      <DemoVideo />
       <FinalCta />
     </SiteShell>
   );
