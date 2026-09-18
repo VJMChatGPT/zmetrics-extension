@@ -112,15 +112,38 @@ const ASSETS = [
   { s: "SOL", n: "Solana", c: "bg-gain" },
 ];
 
+const COIN_ASSETS: Record<string, string> = {
+  BTC: "/assets/coins/bitcoin.png",
+  ETH: "/assets/coins/ethereum.png",
+  XRP: "/assets/coins/xrp.png",
+  SOL: "/assets/coins/solana.png",
+  BNB: "/assets/coins/bnb.png",
+  HYPE: "/assets/coins/hype.jpg",
+};
+
 function Coin({ c, s }: { c: string; s: string }) {
+  const asset = COIN_ASSETS[s];
+
   return (
     <span
       className={cn(
-        "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-background",
-        c,
+        "flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full text-[10px] font-bold text-background",
+        asset ? "bg-foreground/10" : c,
       )}
     >
-      {s[0]}
+      {asset ? (
+        <img
+          src={asset}
+          alt=""
+          aria-hidden="true"
+          className="h-full w-full rounded-full object-contain"
+          width="28"
+          height="28"
+          draggable={false}
+        />
+      ) : (
+        s[0]
+      )}
     </span>
   );
 }
