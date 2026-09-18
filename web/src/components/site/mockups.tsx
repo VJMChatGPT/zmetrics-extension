@@ -117,6 +117,7 @@ const COIN_ASSETS: Record<string, string> = {
   ETH: "/assets/coins/ethereum.png",
   XRP: "/assets/coins/xrp.png",
   SOL: "/assets/coins/solana.png",
+  SOLV: "/assets/coins/solv.jpg",
   BNB: "/assets/coins/bnb.png",
   HYPE: "/assets/coins/hype.jpg",
 };
@@ -159,7 +160,7 @@ export function SearchCard() {
       <ul className="mt-3 space-y-1.5 text-sm">
         {[
           { s: "SOL", n: "Solana", c: "bg-gain", add: true },
-          { s: "SOLO", n: "Sologenic", c: "bg-chart-1" },
+          { s: "SOLV", n: "Solv Protocol", c: "bg-chart-1" },
         ].map((a) => (
           <li
             key={a.s}
