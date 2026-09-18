@@ -762,6 +762,27 @@ body {
   color: var(--text-secondary);
 }
 
+.telemetry-section {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.telemetry-toggle-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 10px;
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+.telemetry-toggle-label input {
+  margin: 1px 0 0;
+  accent-color: var(--accent);
+}
+
 /* EMPTY / ERROR STATES */
 .zm-error,
 .zm-empty {
