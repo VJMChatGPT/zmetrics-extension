@@ -97,12 +97,14 @@ export function Hero() {
               See how it works <ArrowRight className="h-4 w-4" />
             </a>
           </div>
-          <div className="animate-rise mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-muted-foreground [animation-delay:320ms]">
-            <span className="flex items-center gap-2">
+          <div className="animate-rise mt-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-3 text-sm text-muted-foreground [animation-delay:320ms]">
+            <span className="inline-flex items-center">
               <Shortcut />
             </span>
-            <span className="hidden items-center gap-2 sm:flex">
-              <span className="text-xs">or</span>
+            <span className="hidden items-center justify-center px-1 text-xs leading-none sm:inline-flex">
+              or
+            </span>
+            <span className="hidden items-center gap-2 sm:inline-flex">
               <Shortcut mac />
               <span className="text-xs">on Mac</span>
             </span>
