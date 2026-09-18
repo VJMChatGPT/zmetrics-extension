@@ -39,8 +39,6 @@ const loginErrorEl        = document.getElementById("login-error");
 const accountEmailEl      = document.getElementById("account-email");
 const logoutBtn           = document.getElementById("logout-btn");
 const zmetricsXLink       = document.getElementById("zmetrics-x-link");
-const planLabel          = document.getElementById("plan-label");
-const viewPlansBtn        = document.getElementById("view-plans-btn");
 const exclusivePanels     = [
   ...new Set([
     ...Array.from(document.querySelectorAll("[data-exclusive-panel]")),
@@ -203,33 +201,6 @@ function getZMetricsAuth() {
   });
 }
 
-function normalizePlan(rawPlan) {
-  return String(rawPlan || "free").toLowerCase() === "pro" ? "pro" : "free";
-}
-
-function renderPlanStatus(plan) {
-  if (!planLabel) return;
-
-  const normalizedPlan = normalizePlan(plan);
-  const isPro = normalizedPlan === "pro";
-
-  planLabel.textContent = `Plan: ${isPro ? "Pro" : "Free"}`;
-  planLabel.classList.toggle("is-pro", isPro);
-}
-
-function loadPlanStatus() {
-  chrome.storage.local.get({ zmetrics_plan: "free" }, (res) => {
-    renderPlanStatus(res.zmetrics_plan);
-  });
-}
-
-if (chrome.storage?.onChanged) {
-  chrome.storage.onChanged.addListener((changes, areaName) => {
-    if (areaName !== "local" || !changes.zmetrics_plan) return;
-    renderPlanStatus(changes.zmetrics_plan.newValue);
-  });
-}
-
 // ========= INIT =========
 document.addEventListener("DOMContentLoaded", () => {
   if (getTelemetrySurface() === "popup") {
@@ -273,7 +244,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       renderSettingsList();
       renderAuthState();
-      loadPlanStatus();
       fetchPrices();
       setInterval(fetchPrices, 60000);
 
@@ -418,14 +388,6 @@ if (signupBtn) {
   signupBtn.addEventListener("click", () => {
     chrome.tabs.create({
       url: "https://zmetrics.net/signup?source=extension"
-    });
-  });
-}
-
-if (viewPlansBtn) {
-  viewPlansBtn.addEventListener("click", () => {
-    chrome.tabs.create({
-      url: "https://zmetrics.net/#piercing"
     });
   });
 }
