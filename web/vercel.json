@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/telemetry",
+      "destination": "https://mdtvrhfzwmdunawjarvs.supabase.co/functions/v1/telemetry-ingest"
+    }
+  ]
+}
