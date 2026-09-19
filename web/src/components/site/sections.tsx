@@ -22,7 +22,11 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className={cn("scroll-mt-20 px-5 py-20 md:px-8 md:py-28", className)}>
+    <section
+      id={id}
+      className={cn("relative isolate scroll-mt-20 px-5 py-24 md:px-8 md:py-32", className)}
+    >
+
       <div className="mx-auto max-w-6xl">{children}</div>
     </section>
   );
@@ -78,9 +82,13 @@ function Points({
 
 export function Hero() {
   return (
-    <section className="glow-bg relative overflow-hidden px-5 pb-16 pt-20 md:px-8 md:pb-24 md:pt-28">
-      <div className="grid-bg pointer-events-none absolute inset-0" />
+    <section className="relative isolate overflow-hidden px-5 pb-20 pt-20 md:px-8 md:pb-28 md:pt-28">
+      <div className="pointer-events-none absolute left-1/2 top-[-120px] h-[620px] w-[1100px] -translate-x-1/2 section-halo" />
+      <div className="aurora-blob pointer-events-none absolute -z-10 -left-40 top-40 h-[420px] w-[420px]" />
+      <div className="aurora-blob-indigo pointer-events-none absolute -z-10 -right-40 top-10 h-[460px] w-[460px]" />
       <div className="relative mx-auto max-w-6xl">
+
+
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="animate-rise text-4xl font-semibold leading-[1.05] sm:text-5xl md:text-6xl">
             Track crypto <span className="text-shine">without leaving</span> your tab.
@@ -120,8 +128,10 @@ export function Hero() {
 
 export function FeatureTabs() {
   return (
-    <Section id="features">
+    <Section id="features" className="overflow-hidden">
+      <div className="aurora-blob pointer-events-none absolute -z-10 right-[-10%] top-10 h-[520px] w-[520px]" />
       <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
+
         <div className="min-w-0">
           <Heading
             eyebrow="At a glance"
@@ -145,10 +155,13 @@ export function FeatureTabs() {
 
 export function FeatureShortcut() {
   return (
-    <Section className="border-y border-border/60 bg-surface">
+    <Section>
+      <div className="section-veil pointer-events-none absolute inset-0 -z-10" />
+      <div className="fade-rule pointer-events-none absolute inset-x-0 top-0 h-px" />
+      <div className="fade-rule pointer-events-none absolute inset-x-0 bottom-0 h-px" />
       <div className="grid items-center gap-12 lg:grid-cols-2">
         <div className="relative order-2 flex min-w-0 justify-center lg:order-1">
-          <div className="glow-bg absolute inset-0 rounded-full blur-2xl" />
+          <div className="section-halo pointer-events-none absolute inset-0" />
           <div className="relative flex w-full max-w-sm flex-col items-center gap-8">
             <div className="py-3 pl-3">
               <Shortcut size="lg" />
@@ -156,6 +169,7 @@ export function FeatureShortcut() {
             <FloatingWindow className="w-full animate-float" />
           </div>
         </div>
+
         <div className="order-1 min-w-0 lg:order-2">
           <Heading
             eyebrow="Shortcut"
@@ -178,8 +192,11 @@ export function FeatureShortcut() {
 
 export function FeatureCustomize() {
   return (
-    <Section>
+    <Section className="overflow-hidden">
+      <div className="aurora-blob-indigo pointer-events-none absolute -z-10 left-[-8%] bottom-0 h-[480px] w-[480px]" />
+      <div className="aurora-blob pointer-events-none absolute -z-10 right-[-8%] top-0 h-[380px] w-[380px]" />
       <Heading
+
         center
         eyebrow="Customize"
         title="Make it yours."
@@ -224,8 +241,9 @@ function ProductVideo() {
 
 export function FinalCta() {
   return (
-    <section className="glow-bg relative overflow-hidden px-5 py-24 md:px-8 md:py-32">
-      <div className="grid-bg pointer-events-none absolute inset-0" />
+    <section className="relative isolate overflow-hidden px-5 py-28 md:px-8 md:py-36">
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[420px] w-[760px] -translate-x-1/2 -translate-y-1/2 section-halo" />
+
       <div className="relative mx-auto max-w-2xl text-center">
         <h2 className="text-3xl font-semibold leading-tight md:text-5xl">
           Track crypto without breaking your flow.
