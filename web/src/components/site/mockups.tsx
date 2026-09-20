@@ -8,6 +8,9 @@ export function PopupImage({ className }: { className?: string }) {
       src={SITE_CONFIG.assets.popup}
       alt="ZMetrics extension popup showing BTC, ETH, XRP and SOL prices"
       className={cn("w-full rounded-2xl border border-border shadow-card", className)}
+      width="383"
+      height="438"
+      loading="lazy"
       draggable={false}
     />
   );
@@ -33,8 +36,9 @@ export function BrowserMockup({ className }: { className?: string }) {
               src={SITE_CONFIG.assets.mark}
               alt=""
               className="h-4 w-4"
-              width="128"
-              height="128"
+              width="56"
+              height="56"
+              loading="lazy"
             />
           </div>
         </div>
@@ -90,8 +94,9 @@ export function FloatingWindow({ className }: { className?: string }) {
             src={SITE_CONFIG.assets.mark}
             alt=""
             className="h-3.5 w-3.5"
-            width="128"
-            height="128"
+            width="56"
+            height="56"
+            loading="lazy"
           />
           ZMetrics
         </div>
@@ -113,13 +118,13 @@ const ASSETS = [
 ];
 
 const COIN_ASSETS: Record<string, string> = {
-  BTC: "/assets/coins/bitcoin.png",
-  ETH: "/assets/coins/ethereum.png",
-  XRP: "/assets/coins/xrp.png",
-  SOL: "/assets/coins/solana.png",
-  SOLV: "/assets/coins/solv.jpg",
-  BNB: "/assets/coins/bnb.png",
-  HYPE: "/assets/coins/hype.jpg",
+  BTC: "/assets/coins/bitcoin.webp",
+  ETH: "/assets/coins/ethereum.webp",
+  XRP: "/assets/coins/xrp.webp",
+  SOL: "/assets/coins/solana.webp",
+  SOLV: "/assets/coins/solv.webp",
+  BNB: "/assets/coins/bnb.webp",
+  HYPE: "/assets/coins/hype.webp",
 };
 
 function Coin({ c, s }: { c: string; s: string }) {
@@ -140,6 +145,7 @@ function Coin({ c, s }: { c: string; s: string }) {
           className="h-full w-full rounded-full object-contain"
           width="28"
           height="28"
+          loading="lazy"
           draggable={false}
         />
       ) : (

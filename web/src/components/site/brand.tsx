@@ -9,15 +9,17 @@ export function Logo({ className }: { className?: string }) {
         src={SITE_CONFIG.assets.mark}
         alt=""
         className="h-6 w-6 sm:h-7 sm:w-7"
-        width="128"
-        height="128"
+        width="56"
+        height="56"
       />
       <img
         src={SITE_CONFIG.assets.wordmark}
         alt="ZMetrics"
         className="h-7 -ml-1 w-auto object-contain sm:h-9"
-        width="2560"
-        height="800"
+        width="256"
+        height="80"
+        loading="eager"
+        fetchPriority="high"
       />
     </Link>
   );

@@ -5,9 +5,9 @@ export const SITE_CONFIG = {
   xUrl: "https://x.com/zmetrics_net",
   ogImagePath: "/og-image.png",
   assets: {
-    mark: "/assets/zmetrics-mark.png",
-    wordmark: "/assets/zmetrics-wordmark.png",
-    popup: "/assets/zmetrics-popup.png",
+    mark: "/assets/zmetrics-mark.webp",
+    wordmark: "/assets/zmetrics-wordmark.webp",
+    popup: "/assets/zmetrics-popup.webp",
   },
 } as const;
 
