@@ -7,7 +7,7 @@ import {
   FeatureCustomize,
   FinalCta,
 } from "@/components/site/sections";
-import { absoluteOgImageUrl, SITE_CONFIG } from "@/config/site";
+import { absoluteOgImageUrl, canonicalUrl, SITE_CONFIG } from "@/config/site";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -28,6 +28,7 @@ export const Route = createFileRoute("/")({
       { property: "og:image:alt", content: "ZMetrics crypto price tracker popup" },
       { name: "twitter:image", content: absoluteOgImageUrl },
     ],
+    links: [{ rel: "canonical", href: canonicalUrl("/") }],
   }),
   component: Index,
 });

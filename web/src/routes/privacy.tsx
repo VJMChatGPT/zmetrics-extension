@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/layout";
-import { absoluteOgImageUrl, SITE_CONFIG } from "@/config/site";
+import { absoluteOgImageUrl, canonicalUrl, SITE_CONFIG } from "@/config/site";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
@@ -14,6 +14,7 @@ export const Route = createFileRoute("/privacy")({
       { property: "og:image:alt", content: "ZMetrics crypto price tracker popup" },
       { name: "twitter:image", content: absoluteOgImageUrl },
     ],
+    links: [{ rel: "canonical", href: canonicalUrl("/privacy") }],
   }),
   component: PrivacyPage,
 });

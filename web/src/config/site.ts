@@ -12,3 +12,10 @@ export const SITE_CONFIG = {
 } as const;
 
 export const absoluteOgImageUrl = `${SITE_CONFIG.siteUrl}${SITE_CONFIG.ogImagePath}`;
+
+export function canonicalUrl(pathname: string): string {
+  const url = new URL(pathname, `${SITE_CONFIG.siteUrl}/`);
+  url.search = "";
+  url.hash = "";
+  return url.toString();
+}
