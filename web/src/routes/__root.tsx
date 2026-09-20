@@ -15,6 +15,29 @@ import { absoluteOgImageUrl, SITE_CONFIG } from "../config/site";
 
 const GA4_MEASUREMENT_ID = "G-LGCQP8HW2B";
 
+type AnalyticsWindow = Window & {
+  dataLayer?: unknown[][];
+  gtag?: (...args: unknown[]) => void;
+  requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+  cancelIdleCallback?: (handle: number) => void;
+};
+
+function loadAnalytics() {
+  const analyticsWindow = window as AnalyticsWindow;
+
+  if (analyticsWindow.gtag) return;
+
+  const dataLayer = (analyticsWindow.dataLayer ??= []);
+  analyticsWindow.gtag = (...args: unknown[]) => dataLayer.push(args);
+  analyticsWindow.gtag("js", new Date());
+  analyticsWindow.gtag("config", GA4_MEASUREMENT_ID);
+
+  const script = document.createElement("script");
+  script.async = true;
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`;
+  document.head.appendChild(script);
+}
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -95,20 +118,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
-    scripts: [
-      {
-        src: `https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`,
-        async: true,
-      },
-      {
-        children: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '${GA4_MEASUREMENT_ID}');
-        `,
-      },
-    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -132,6 +141,36 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    const analyticsWindow = window as AnalyticsWindow;
+    let idleCallbackId: number | undefined;
+    let timeoutId: number | undefined;
+
+    const scheduleAnalytics = () => {
+      if (analyticsWindow.requestIdleCallback) {
+        idleCallbackId = analyticsWindow.requestIdleCallback(loadAnalytics, { timeout: 2000 });
+      } else {
+        timeoutId = window.setTimeout(loadAnalytics, 1000);
+      }
+    };
+
+    if (document.readyState === "complete") {
+      scheduleAnalytics();
+    } else {
+      window.addEventListener("load", scheduleAnalytics, { once: true });
+    }
+
+    return () => {
+      window.removeEventListener("load", scheduleAnalytics);
+      if (idleCallbackId !== undefined) {
+        analyticsWindow.cancelIdleCallback?.(idleCallbackId);
+      }
+      if (timeoutId !== undefined) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

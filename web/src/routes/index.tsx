@@ -29,7 +29,16 @@ export const Route = createFileRoute("/")({
       { property: "og:image:alt", content: "ZMetrics crypto price tracker popup" },
       { name: "twitter:image", content: absoluteOgImageUrl },
     ],
-    links: [{ rel: "canonical", href: canonicalUrl("/") }],
+    links: [
+      { rel: "canonical", href: canonicalUrl("/") },
+      {
+        rel: "preload",
+        as: "image",
+        href: "/assets/zmetrics-demo/zmetrics-demo-horizontal-poster.png",
+        type: "image/png",
+        fetchPriority: "high",
+      },
+    ],
   }),
   component: Index,
 });

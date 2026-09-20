@@ -263,6 +263,16 @@ function ProductVideo() {
       >
         {shouldLoad ? (
           <>
+            <source
+              media="(max-width: 767px)"
+              src="/assets/zmetrics-demo/zmetrics-demo-horizontal-mobile.webm"
+              type="video/webm"
+            />
+            <source
+              media="(max-width: 767px)"
+              src="/assets/zmetrics-demo/zmetrics-demo-horizontal-mobile.mp4"
+              type="video/mp4"
+            />
             <source src="/assets/zmetrics-demo/zmetrics-demo-horizontal.webm" type="video/webm" />
             <source src="/assets/zmetrics-demo/zmetrics-demo-horizontal.mp4" type="video/mp4" />
           </>
