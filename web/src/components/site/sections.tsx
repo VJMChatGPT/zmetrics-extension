@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
 import {
   Activity,
   PieChart,
@@ -222,19 +223,50 @@ export function FeatureCustomize() {
 }
 
 function ProductVideo() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => setShouldLoad(true), 1000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
+  useEffect(() => {
+    if (!shouldLoad || !videoRef.current) return;
+
+    const video = videoRef.current;
+    video.load();
+    void video.play().catch(() => undefined);
+  }, [shouldLoad]);
+
+  const playVideo = () => {
+    void videoRef.current?.play().catch(() => undefined);
+  };
+
   return (
     <div className="card-glass overflow-hidden rounded-3xl p-2 shadow-glow md:p-3">
       <video
+        ref={videoRef}
         className="block w-full rounded-2xl"
         autoPlay
         controls
         loop
         muted
         playsInline
-        preload="metadata"
+        preload="none"
+        poster="/assets/zmetrics-demo/zmetrics-demo-horizontal-poster.png"
+        width={1280}
+        height={720}
+        onLoadedData={playVideo}
         aria-label="ZMetrics extension demo"
       >
-        <source src="/assets/zmetrics-demo/zmetrics-demo-horizontal.mp4" type="video/mp4" />
+        {shouldLoad ? (
+          <>
+            <source src="/assets/zmetrics-demo/zmetrics-demo-horizontal.webm" type="video/webm" />
+            <source src="/assets/zmetrics-demo/zmetrics-demo-horizontal.mp4" type="video/mp4" />
+          </>
+        ) : null}
       </video>
     </div>
   );
