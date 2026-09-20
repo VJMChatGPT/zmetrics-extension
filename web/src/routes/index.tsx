@@ -12,17 +12,17 @@ import { absoluteOgImageUrl, canonicalUrl, SITE_CONFIG } from "@/config/site";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ZMetrics — Crypto Price Tracker for Chrome" },
+      { title: "ZMetrics - Crypto Price Tracker for Chrome" },
       {
         name: "description",
         content:
-          "A lightweight crypto price tracker for Chrome with live prices, market caps and 24h changes — always one click away.",
+          "A lightweight crypto price tracker for Chrome with live prices, market caps and 24h changes, always one click away.",
       },
-      { property: "og:title", content: "ZMetrics — Crypto Price Tracker for Chrome" },
+      { property: "og:title", content: "ZMetrics - Crypto Price Tracker for Chrome" },
       {
         property: "og:description",
         content:
-          "A lightweight crypto price tracker for Chrome with live prices, market caps and 24h changes — always one click away.",
+          "A lightweight crypto price tracker for Chrome with live prices, market caps and 24h changes, always one click away.",
       },
       { property: "og:url", content: SITE_CONFIG.siteUrl },
       { property: "og:image", content: absoluteOgImageUrl },

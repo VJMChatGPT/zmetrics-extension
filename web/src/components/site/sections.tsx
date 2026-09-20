@@ -96,7 +96,7 @@ export function Hero() {
           </h1>
           <p className="animate-rise mx-auto mt-6 max-w-xl text-lg text-muted-foreground [animation-delay:120ms]">
             A lightweight crypto price tracker for Chrome with live prices, market caps and 24h
-            changes — always one click or shortcut away.
+            changes, always one click or shortcut away.
           </p>
           <div className="animate-rise mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row [animation-delay:220ms]">
             <ChromeButton size="lg" />
