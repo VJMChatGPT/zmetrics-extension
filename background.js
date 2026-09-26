@@ -1,41 +1,65 @@
-import {
-  TELEMETRY_FLUSH_MESSAGE,
-  TELEMETRY_SET_ENABLED_MESSAGE,
-  TELEMETRY_TRACK_MESSAGE,
-  createTelemetryManager
-} from "./telemetry.js";
-
-// background.js - gestiona la ventana flotante y la telemetría de ZMetrics
+// background.js - gestiona la ventana flotante de ZMetrics
 
 const OPEN_WINDOW_COMMAND = "open_window_popup";
-const WINDOW_URL = chrome.runtime.getURL("window.html");
-const telemetry = createTelemetryManager();
+const WINDOW_ID_STORAGE_KEY = "zmetrics_floating_window_id";
+const windowStorage = chrome.storage.session || chrome.storage.local;
 
 let popupWindowId = null;
 let toggleOperation = Promise.resolve();
 
+function storageGet(defaults) {
+  return new Promise((resolve) => {
+    windowStorage.get(defaults, (result) => resolve(result || defaults));
+  });
+}
+
+function storageSet(values) {
+  return new Promise((resolve) => {
+    windowStorage.set(values, () => resolve());
+  });
+}
+
+function storageRemove(key) {
+  return new Promise((resolve) => {
+    windowStorage.remove(key, () => resolve());
+  });
+}
+
+async function getStoredPopupWindowId() {
+  if (popupWindowId !== null) return popupWindowId;
+
+  const stored = await storageGet({ [WINDOW_ID_STORAGE_KEY]: null });
+  const storedId = stored[WINDOW_ID_STORAGE_KEY];
+  if (Number.isInteger(storedId)) {
+    popupWindowId = storedId;
+    return storedId;
+  }
+
+  return null;
+}
+
+async function clearPopupWindowId() {
+  popupWindowId = null;
+  await storageRemove(WINDOW_ID_STORAGE_KEY);
+}
+
+async function rememberPopupWindowId(windowId) {
+  popupWindowId = windowId;
+  await storageSet({ [WINDOW_ID_STORAGE_KEY]: windowId });
+}
+
 async function findExistingPopupWindowId() {
-  if (popupWindowId !== null) {
-    try {
-      await chrome.windows.get(popupWindowId);
-      return popupWindowId;
-    } catch {
-      popupWindowId = null;
-    }
+  const candidateId = await getStoredPopupWindowId();
+  if (candidateId === null) return null;
+
+  try {
+    const window = await chrome.windows.get(candidateId);
+    if (window?.type === "popup") return candidateId;
+  } catch {
+    // The stored window was closed or is no longer available.
   }
 
-  const windows = await chrome.windows.getAll({ populate: true });
-
-  for (const win of windows) {
-    if (win.type !== "popup" || !Array.isArray(win.tabs)) continue;
-
-    const hasZmetricsWindowTab = win.tabs.some((tab) => tab.url === WINDOW_URL);
-    if (hasZmetricsWindowTab && typeof win.id === "number") {
-      popupWindowId = win.id;
-      return popupWindowId;
-    }
-  }
-
+  await clearPopupWindowId();
   return null;
 }
 
@@ -44,11 +68,11 @@ async function togglePopupWindow() {
 
   if (existingWindowId !== null) {
     await chrome.windows.remove(existingWindowId);
-    popupWindowId = null;
+    await clearPopupWindowId();
     return;
   }
 
-  const newWin = await chrome.windows.create({
+  const newWindow = await chrome.windows.create({
     url: "window.html",
     type: "popup",
     width: 380,
@@ -58,18 +82,14 @@ async function togglePopupWindow() {
     top: 120
   });
 
-  popupWindowId = typeof newWin.id === "number" ? newWin.id : null;
-  if (popupWindowId !== null) {
-    await telemetry.track("extension_open", {
-      surface: "floating_window",
-      trigger: "shortcut"
-    });
+  if (typeof newWindow?.id === "number") {
+    await rememberPopupWindowId(newWindow.id);
   }
 }
 
 chrome.windows.onRemoved.addListener((windowId) => {
   if (windowId === popupWindowId) {
-    popupWindowId = null;
+    void clearPopupWindowId();
   }
 });
 
@@ -80,43 +100,4 @@ chrome.commands.onCommand.addListener(async (command) => {
     .then(() => togglePopupWindow())
     .catch(() => {});
   await toggleOperation;
-});
-
-chrome.runtime.onInstalled.addListener(async (details) => {
-  if (details.reason === "install") {
-    await telemetry.track("install");
-  } else if (details.reason === "update") {
-    await telemetry.track("update", {
-      previous_version: details.previousVersion || "unknown"
-    });
-  }
-});
-
-chrome.runtime.onStartup.addListener(() => {
-  void telemetry.flush();
-});
-
-chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-  if (message?.type === TELEMETRY_TRACK_MESSAGE) {
-    void telemetry.track(message.eventName, message.properties).then(() => {
-      sendResponse({ ok: true });
-    }).catch(() => {
-      sendResponse({ ok: false });
-    });
-    return true;
-  }
-
-  if (message?.type === TELEMETRY_FLUSH_MESSAGE) {
-    void telemetry.flush().then(() => sendResponse({ ok: true })).catch(() => sendResponse({ ok: false }));
-    return true;
-  }
-
-  if (message?.type === TELEMETRY_SET_ENABLED_MESSAGE) {
-    void telemetry.setEnabled(message.enabled === true)
-      .then(() => sendResponse({ ok: true }))
-      .catch(() => sendResponse({ ok: false }));
-    return true;
-  }
-
-  return false;
 });

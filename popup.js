@@ -1,13 +1,10 @@
 import { BASE_COINS, getAllCoins as getAllCoinsLogic, getActiveCoins, marketsById, formatPrice as formatPriceLogic, formatMarketCap as formatMarketCapLogic, formatChange as formatChangeLogic } from "./extension-logic.js";
-import { getAnalyticsEnabled, getTelemetrySurface, setAnalyticsEnabled, trackEvent } from "./telemetry.js";
 
 const FALLBACK_ICON = "icons/icon32.png";
 const COINGECKO_MARKETS_URL =
   "https://api.coingecko.com/api/v3/coins/markets";
 const COINGECKO_SEARCH_URL =
   "https://api.coingecko.com/api/v3/search";
-const ZMETRICS_JWT_URL =
-  "https://zmetrics.net/wp-json/jwt-auth/v1/token";
 
 // ========= DOM ELEMENTS =========
 const list              = document.getElementById("coins-list");
@@ -23,27 +20,12 @@ const searchResults     = document.getElementById("search-results");
 const shortcutDisplay   = document.getElementById("shortcut-display");
 const shortcutChangeBtn = document.getElementById("shortcut-change-btn");
 const currencySelect    = document.getElementById("currency-select");
-const analyticsToggle   = document.getElementById("analytics-enabled");
 
-// Account/auth elements
-const accountPanel        = document.getElementById("account-panel");
-const accountToggleBtn    = document.getElementById("account-toggle-btn");
-const accountCloseBtn     = document.getElementById("account-close-btn");
-const accountLoggedOut    = document.getElementById("account-logged-out");
-const accountLoggedIn     = document.getElementById("account-logged-in");
-const loginEmailInput     = document.getElementById("login-email");
-const loginPasswordInput  = document.getElementById("login-password");
-const loginBtn            = document.getElementById("login-btn");
-const signupBtn           = document.getElementById("signup-btn");
-const loginErrorEl        = document.getElementById("login-error");
-const accountEmailEl      = document.getElementById("account-email");
-const logoutBtn           = document.getElementById("logout-btn");
 const zmetricsXLink       = document.getElementById("zmetrics-x-link");
 const exclusivePanels     = [
   ...new Set([
     ...Array.from(document.querySelectorAll("[data-exclusive-panel]")),
-    settingsPanel,
-    accountPanel
+    settingsPanel
   ])
 ].filter(Boolean);
 
@@ -55,10 +37,6 @@ let coinOrder      = [];
 let selectedCurrency = "usd";
 let lastData       = null;
 let activePanelId  = null;
-
-// Auth state
-let authToken = null;
-let authEmail = null;
 
 // ========= HELPERS: COIN LISTS / ORDER =========
 function getBaseVisible() {
@@ -131,40 +109,6 @@ function handleDragEnd() {
   draggedElement = null;
 }
 
-// ========= AUTH RENDERING =========
-function renderAuthState() {
-  if (!accountLoggedOut || !accountLoggedIn) return;
-
-  if (authToken && authEmail) {
-    accountLoggedOut.style.display = "none";
-    accountLoggedIn.style.display = "flex";
-    if (accountEmailEl) {
-      accountEmailEl.textContent = authEmail;
-    }
-    if (loginErrorEl) {
-      loginErrorEl.textContent = "";
-    }
-  } else {
-    accountLoggedOut.style.display = "flex";
-    accountLoggedIn.style.display = "none";
-    if (accountEmailEl) {
-      accountEmailEl.textContent = "";
-    }
-  }
-}
-
-function setLoginError(message) {
-  if (loginErrorEl) {
-    loginErrorEl.textContent = message || "";
-  }
-}
-
-function setLoginLoading(isLoading) {
-  if (!loginBtn) return;
-  loginBtn.disabled = isLoading;
-  loginBtn.textContent = isLoading ? "Logging in…" : "Log in";
-}
-
 function setActivePanel(panelId) {
   activePanelId = panelId;
 
@@ -180,51 +124,15 @@ function togglePanel(panelId) {
   setActivePanel(nextPanelId);
 }
 
-// ========= AUTH HELPERS (for future use) =========
-/**
- * Returns a promise resolving to { token, email } or { token: null, email: null }.
- */
-function getZMetricsAuth() {
-  return new Promise((resolve) => {
-    chrome.storage.sync.get(
-      {
-        zmetricsToken: null,
-        zmetricsEmail: null
-      },
-      (res) => {
-        resolve({
-          token: res.zmetricsToken || null,
-          email: res.zmetricsEmail || null
-        });
-      }
-    );
-  });
-}
-
 // ========= INIT =========
 document.addEventListener("DOMContentLoaded", () => {
-  if (getTelemetrySurface() === "popup") {
-    void trackEvent("extension_open", {
-      surface: "popup",
-      trigger: "toolbar"
-    });
-  }
-
-  if (analyticsToggle) {
-    void getAnalyticsEnabled().then((enabled) => {
-      analyticsToggle.checked = enabled;
-    });
-  }
-
   chrome.storage.sync.get(
     {
       enabledCoinIds: BASE_COINS.map(c => c.id),
       customCoins: [],
       deletedBaseIds: [],
       coinOrder: [],
-      selectedCurrency: "usd",
-      zmetricsToken: null,
-      zmetricsEmail: null
+      selectedCurrency: "usd"
     },
     (res) => {
       enabledCoinIds = Array.isArray(res.enabledCoinIds)
@@ -235,15 +143,11 @@ document.addEventListener("DOMContentLoaded", () => {
       coinOrder      = Array.isArray(res.coinOrder) ? res.coinOrder : [];
       selectedCurrency = res.selectedCurrency === "eur" ? "eur" : "usd";
 
-      authToken = res.zmetricsToken || null;
-      authEmail = res.zmetricsEmail || null;
-
       syncCoinOrderWithCurrentCoins();
       if (currencySelect) {
         currencySelect.value = selectedCurrency;
       }
       renderSettingsList();
-      renderAuthState();
       fetchPrices();
       setInterval(fetchPrices, 60000);
 
@@ -285,19 +189,6 @@ if (settingsClose && settingsPanel) {
   });
 }
 
-// Account dropdown toggle
-if (accountToggleBtn && accountPanel) {
-  accountToggleBtn.addEventListener("click", () => {
-    togglePanel(accountPanel.id);
-  });
-}
-
-if (accountCloseBtn && accountPanel) {
-  accountCloseBtn.addEventListener("click", () => {
-    setActivePanel(null);
-  });
-}
-
 // Search coins
 if (searchBtn) {
   searchBtn.addEventListener("click", () => {
@@ -334,60 +225,7 @@ if (currencySelect) {
     chrome.storage.sync.set({
       selectedCurrency
     }, () => {
-      void trackEvent("currency_change", {
-        currency: selectedCurrency === "eur" ? "EUR" : "USD"
-      });
       fetchPrices();
-    });
-  });
-}
-
-if (analyticsToggle) {
-  analyticsToggle.addEventListener("change", () => {
-    void setAnalyticsEnabled(analyticsToggle.checked);
-  });
-}
-
-// Auth: login
-if (loginBtn) {
-  loginBtn.addEventListener("click", handleLoginSubmit);
-}
-if (loginEmailInput) {
-  loginEmailInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleLoginSubmit();
-    }
-  });
-}
-if (loginPasswordInput) {
-  loginPasswordInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleLoginSubmit();
-    }
-  });
-}
-
-// Auth: logout
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", () => {
-    authToken = null;
-    authEmail = null;
-    chrome.storage.sync.set(
-      { zmetricsToken: null, zmetricsEmail: null },
-      () => {
-        renderAuthState();
-      }
-    );
-  });
-}
-
-// Auth: signup opens new tab
-if (signupBtn) {
-  signupBtn.addEventListener("click", () => {
-    chrome.tabs.create({
-      url: "https://zmetrics.net/signup?source=extension"
     });
   });
 }
@@ -398,78 +236,6 @@ if (zmetricsXLink) {
       url: "https://x.com/zmetrics_net"
     });
   });
-}
-
-// ========= AUTH: LOGIN HANDLER =========
-async function handleLoginSubmit() {
-  if (!loginEmailInput || !loginPasswordInput) return;
-
-  const email = loginEmailInput.value.trim();
-  const password = loginPasswordInput.value;
-
-  setLoginError("");
-
-  if (!email || !password) {
-    setLoginError("Please enter email and password.");
-    return;
-  }
-
-  setLoginLoading(true);
-
-  try {
-    const res = await fetch(ZMETRICS_JWT_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        username: email,
-        password: password
-      })
-    });
-
-    let data = null;
-    try {
-      data = await res.json();
-    } catch (_) {}
-
-    if (!res.ok) {
-      const errorMessage =
-        (data && (data.message || data?.data?.message)) ||
-        "Invalid email or password.";
-      setLoginError(errorMessage);
-      return;
-    }
-
-    const token =
-      (data && (data.token || data?.data?.token)) || null;
-    const userEmail =
-      (data && (data.user_email || data?.data?.user_email)) || email;
-
-    if (!token) {
-      setLoginError("Unexpected server response. Please try again.");
-      return;
-    }
-
-    authToken = token;
-    authEmail = userEmail;
-
-    chrome.storage.sync.set(
-      {
-        zmetricsToken: token,
-        zmetricsEmail: userEmail
-      },
-      () => {
-        if (loginPasswordInput) loginPasswordInput.value = "";
-        renderAuthState();
-      }
-    );
-  } catch (err) {
-    console.error("Login error:", err);
-    setLoginError("Network error. Please check your connection.");
-  } finally {
-    setLoginLoading(false);
-  }
 }
 
 // ========= PRICE FETCHING =========
@@ -496,22 +262,9 @@ async function fetchPrices() {
     const markets = await res.json();
     lastData = marketsById(markets);
 
-    void trackEvent("price_load", {
-      status: "success",
-      provider: "coingecko"
-    });
-
     renderTable();
   } catch (err) {
     console.error("Error fetching prices:", err);
-    void trackEvent("price_load", {
-      status: "error",
-      provider: "coingecko"
-    });
-    void trackEvent("client_error", {
-      error_code: "PRICE_FETCH_FAILED",
-      component: "prices"
-    });
 
     if (!lastData) {
       list.innerHTML =
@@ -634,10 +387,6 @@ function addCustomCoinFromSearch(coin) {
       }
       renderSettingsList();
       fetchPrices();
-      void trackEvent("watchlist_change", {
-        action: "add",
-        total_assets: getAllCoins().length
-      });
       searchResults.innerHTML =
         `<div class="search-info">Added ${newCoin.symbol} to your list.</div>`;
     }
@@ -666,10 +415,6 @@ function removeCoin(id) {
       }
       renderSettingsList();
       renderTable();
-      void trackEvent("watchlist_change", {
-        action: "remove",
-        total_assets: getAllCoins().length
-      });
     }
   );
 }
