@@ -140,6 +140,12 @@ export function FeatureTabs() {
             title="Check the market without switching tabs."
             text="Check the prices you care about without opening another tab, dashboard or app."
           />
+          <Link
+            to="/crypto-price-tracker"
+            className="mt-4 inline-flex text-sm font-semibold text-primary transition-colors hover:text-foreground"
+          >
+            Explore the crypto price tracker for Chrome
+          </Link>
           <Points
             className="mt-8 sm:grid-cols-3 lg:grid-cols-1"
             items={[

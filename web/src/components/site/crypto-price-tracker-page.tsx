@@ -177,7 +177,7 @@ export function CryptoPriceTrackerPage() {
             <SectionHeading
               eyebrow="Workflow"
               title="Track crypto without breaking your flow"
-              text="Open the popup from the toolbar, use a keyboard shortcut or keep the floating window visible while you browse."
+              text="Open the popup from the toolbar, use a keyboard shortcut or keep the floating window visible while you browse. That makes it easy to track crypto prices in Chrome while you work."
             />
             <ul className="mt-8 grid gap-3">
               {[
