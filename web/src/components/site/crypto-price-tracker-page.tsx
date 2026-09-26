@@ -233,6 +233,13 @@ export function CryptoPriceTrackerPage() {
           title="Follow the assets that matter to you"
           text="Build a simple crypto watchlist around your workflow. Add assets, reorder them and choose how prices are displayed."
         />
+        <Link
+          to="/guides/track-crypto-prices-in-chrome"
+          className="mx-auto mt-5 flex w-fit items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-foreground"
+        >
+          Read the guide: how to track crypto prices in Chrome
+          <span aria-hidden="true">→</span>
+        </Link>
         <div className="mt-12 grid gap-5 md:grid-cols-3">
           <div className="group flex flex-col gap-3">
             <div className="transition-transform duration-300 group-hover:-translate-y-1">
