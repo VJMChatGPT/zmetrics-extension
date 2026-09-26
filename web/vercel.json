@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/:slug", "destination": "https://mdtvrhfzwmdunawjarvs.supabase.co/functions/v1/marketing-redirect?slug=:slug" },
+    { "source": "/r/:slug", "destination": "https://mdtvrhfzwmdunawjarvs.supabase.co/functions/v1/marketing-redirect?slug=:slug" },
     {
       "source": "/api/telemetry",
       "destination": "https://mdtvrhfzwmdunawjarvs.supabase.co/functions/v1/telemetry-ingest"

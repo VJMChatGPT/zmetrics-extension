@@ -29,6 +29,22 @@ export const Route = createFileRoute("/")({
       { property: "og:image:alt", content: "ZMetrics crypto price tracker popup" },
       { name: "twitter:image", content: absoluteOgImageUrl },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "ZMetrics",
+          applicationCategory: "BrowserApplication",
+          operatingSystem: "Chrome",
+          description:
+            "A lightweight crypto price tracker for Chrome with live prices, market caps and 24h changes, always one click away.",
+          url: SITE_CONFIG.siteUrl,
+          downloadUrl: SITE_CONFIG.chromeWebStoreUrl,
+        }),
+      },
+    ],
     links: [
       { rel: "canonical", href: canonicalUrl("/") },
       {

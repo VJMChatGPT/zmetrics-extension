@@ -91,51 +91,7 @@ function validateEvent(value: unknown): Record<string, unknown> | null {
   return value;
 }
 
-function ga4ClientId(installationId: string): string {
-  const hex = installationId.replaceAll("-", "");
-  const first = Number(BigInt(`0x${hex.slice(0, 8)}`) % 4294967296n);
-  const second = Number(BigInt(`0x${hex.slice(8, 16)}`) % 4294967296n);
-  return `${first}.${second}`;
-}
 
-function ga4SessionId(sessionId: string | null): number {
-  if (!sessionId) return 1;
-  const hex = sessionId.replaceAll("-", "").slice(0, 12);
-  return Number(BigInt(`0x${hex}`) % 9007199254740991n) || 1;
-}
-
-async function forwardToGa4(events: Record<string, unknown>[]): Promise<void> {
-  const measurementId = Deno.env.get("GA4_MEASUREMENT_ID");
-  const apiSecret = Deno.env.get("GA4_API_SECRET");
-  if (!measurementId || !apiSecret) {
-    console.warn("GA4 secrets are not configured; Supabase remains the source of truth.");
-    return;
-  }
-
-  const response = await fetch(`https://www.google-analytics.com/mp/collect?measurement_id=${encodeURIComponent(measurementId)}&api_secret=${encodeURIComponent(apiSecret)}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      client_id: ga4ClientId(events[0].installation_id as string),
-      events: events.map((event) => {
-        const params = {
-          ...(event.properties as Record<string, unknown>),
-          extension_version: event.extension_version,
-          zmetrics_event_id: event.event_id,
-          zmetrics_session_id: event.session_id,
-          session_id: ga4SessionId(event.session_id as string | null),
-          engagement_time_msec: 1
-        };
-        return {
-          name: event.event_name === "session_start" ? "zmetrics_session_start" : event.event_name,
-          params
-        };
-      })
-    })
-  });
-
-  if (!response.ok) throw new Error(`GA4 forwarding failed with HTTP ${response.status}`);
-}
 
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") {
@@ -194,22 +150,6 @@ Deno.serve(async (request) => {
 
   const insertedIds = new Set((insertedRows || []).map((row) => row.event_id));
   const newlyInsertedEvents = validEvents.filter((event) => insertedIds.has(event.event_id));
-  if (newlyInsertedEvents.length > 0) {
-    const byInstallation = new Map<string, Record<string, unknown>[]>();
-    for (const event of newlyInsertedEvents) {
-      const installationId = event.installation_id as string;
-      const group = byInstallation.get(installationId) || [];
-      group.push(event);
-      byInstallation.set(installationId, group);
-    }
-    await Promise.all([...byInstallation.values()].map(async (eventsForInstallation) => {
-      try {
-        await forwardToGa4(eventsForInstallation);
-      } catch (error) {
-        console.error("Telemetry GA4 forwarding failed", error instanceof Error ? error.name : "unknown_error");
-      }
-    }));
-  }
-
   return responseBody({ accepted: newlyInsertedEvents.length }, 202, request);
 });
+

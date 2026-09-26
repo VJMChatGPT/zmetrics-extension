@@ -35,6 +35,9 @@ export function Footer() {
           </p>
         </div>
         <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
+          <Link to="/crypto-price-tracker" className="transition-colors hover:text-foreground">
+            Crypto Price Tracker
+          </Link>
           <Link to="/privacy" className="transition-colors hover:text-foreground">
             Privacy
           </Link>

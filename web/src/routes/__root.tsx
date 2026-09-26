@@ -13,31 +13,6 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { absoluteOgImageUrl, SITE_CONFIG } from "../config/site";
 
-const GA4_MEASUREMENT_ID = "G-LGCQP8HW2B";
-
-type AnalyticsWindow = Window & {
-  dataLayer?: unknown[][];
-  gtag?: (...args: unknown[]) => void;
-  requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
-  cancelIdleCallback?: (handle: number) => void;
-};
-
-function loadAnalytics() {
-  const analyticsWindow = window as AnalyticsWindow;
-
-  if (analyticsWindow.gtag) return;
-
-  const dataLayer = (analyticsWindow.dataLayer ??= []);
-  analyticsWindow.gtag = (...args: unknown[]) => dataLayer.push(args);
-  analyticsWindow.gtag("js", new Date());
-  analyticsWindow.gtag("config", GA4_MEASUREMENT_ID);
-
-  const script = document.createElement("script");
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`;
-  document.head.appendChild(script);
-}
-
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -114,6 +89,28 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@zmetrics" },
       { name: "twitter:image", content: absoluteOgImageUrl },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "ZMetrics",
+          url: SITE_CONFIG.siteUrl,
+          logo: `${SITE_CONFIG.siteUrl}${SITE_CONFIG.assets.mark}`,
+          sameAs: [SITE_CONFIG.xUrl],
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "ZMetrics",
+          url: SITE_CONFIG.siteUrl,
+        }),
+      },
+    ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
@@ -142,36 +139,6 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
-  useEffect(() => {
-    const analyticsWindow = window as AnalyticsWindow;
-    let idleCallbackId: number | undefined;
-    let timeoutId: number | undefined;
-
-    const scheduleAnalytics = () => {
-      if (analyticsWindow.requestIdleCallback) {
-        idleCallbackId = analyticsWindow.requestIdleCallback(loadAnalytics, { timeout: 2000 });
-      } else {
-        timeoutId = window.setTimeout(loadAnalytics, 1000);
-      }
-    };
-
-    if (document.readyState === "complete") {
-      scheduleAnalytics();
-    } else {
-      window.addEventListener("load", scheduleAnalytics, { once: true });
-    }
-
-    return () => {
-      window.removeEventListener("load", scheduleAnalytics);
-      if (idleCallbackId !== undefined) {
-        analyticsWindow.cancelIdleCallback?.(idleCallbackId);
-      }
-      if (timeoutId !== undefined) {
-        window.clearTimeout(timeoutId);
-      }
-    };
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
@@ -179,3 +146,5 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
+
