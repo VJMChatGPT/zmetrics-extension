@@ -14,7 +14,7 @@ function headers(request: Request) {
   if (request.headers.get("origin") === origin) {
     result.set("access-control-allow-origin", origin);
     result.set("access-control-allow-headers", "authorization, content-type");
-    result.set("access-control-allow-methods", "GET, POST, PATCH, OPTIONS");
+    result.set("access-control-allow-methods", "GET, POST, PATCH, DELETE, OPTIONS");
     result.set("vary", "Origin");
   }
   return result;
@@ -103,6 +103,15 @@ async function updateLink(request: Request, body: Record<string, unknown>) {
   return json(request, { link: data });
 }
 
+async function deleteLink(request: Request) {
+  const id = new URL(request.url).searchParams.get("id");
+  if (!text(id, 100)) return error(request, "invalid_id", 400);
+  const { data, error: deleteError } = await supabase.from("marketing_links").delete().eq("id", id).select("id").maybeSingle();
+  if (deleteError) return error(request, "delete_failed", 500);
+  if (!data) return error(request, "link_not_found", 404);
+  return json(request, { deleted: true, link_id: data.id });
+}
+
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: headers(request) });
   try {
@@ -119,6 +128,7 @@ Deno.serve(async (request) => {
     if (!await isValidSessionToken(bearerToken(request))) return error(request, "unauthorized", 401);
     if (request.method === "GET") return await dashboard(request);
     if (request.method === "PATCH") return await updateLink(request, await request.json() as Record<string, unknown>);
+    if (request.method === "DELETE") return await deleteLink(request);
     return error(request, "method_not_allowed", 405);
   }
   catch (caught) { console.error(caught instanceof Error ? caught.message : "admin_request_failed"); return error(request, "invalid_request", 400); }

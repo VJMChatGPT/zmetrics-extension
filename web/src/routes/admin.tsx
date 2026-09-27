@@ -22,6 +22,7 @@ function AdminPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [copiedSlug, setCopiedSlug] = useState("");
+  const [deletingId, setDeletingId] = useState("");
 
   function expireSession(message = "Session expired. Please log in again.") {
     localStorage.removeItem(SESSION_STORAGE_KEY);
@@ -88,6 +89,23 @@ function AdminPage() {
     if (response.status === 401) expireSession(); else if (!response.ok) setError("No se pudo cambiar el estado"); else await load();
   }
 
+  async function removeLink(row: LinkRow) {
+    if (!window.confirm("Delete this link and all associated clicks?")) return;
+    setDeletingId(row.id); setMessage(""); setError("");
+    try {
+      const response = await fetch(`${API_URL}?id=${encodeURIComponent(row.id)}`, { method: "DELETE", headers: { authorization: `Bearer ${sessionToken}` } });
+      if (response.status === 401) { expireSession(); return; }
+      const payload = await response.json().catch(() => null) as { error?: string } | null;
+      if (!response.ok) { setError(payload?.error === "link_not_found" ? "El enlace ya no existe" : "No se pudo borrar el enlace"); return; }
+      setMessage("Enlace eliminado");
+      await load();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Error de conexión");
+    } finally {
+      setDeletingId("");
+    }
+  }
+
   if (!sessionToken || !dashboard) return <main style={styles.login}><section style={styles.loginCard}><div style={styles.eyebrow}>ZMETRICS / GROWTH</div><h1 style={styles.title}>Growth Console</h1><p style={styles.muted}>Panel privado de marketing tracking.</p><form onSubmit={login}><label style={styles.label}>Admin password<input autoFocus type="password" value={passwordInput} onChange={(event) => setPasswordInput(event.target.value)} style={styles.input} /></label><button type="submit" style={styles.primary}>Entrar</button></form>{error && <p style={styles.error}>{error}</p>}</section></main>;
 
   const maxClicks = Math.max(1, ...dashboard.daily_clicks.map((item) => item.clicks));
@@ -99,7 +117,7 @@ function AdminPage() {
     <section style={styles.panel}><div style={styles.panelHeader}><div><h2 style={styles.heading}>Click activity</h2><span style={styles.muted}>Daily clicks · last 30 days</span></div><div style={styles.insights}><span>Top source <b>{dashboard.overview.top_source?.name ?? "N/D"}</b></span><span>Top campaign <b>{dashboard.overview.top_campaign?.name ?? "N/D"}</b></span></div></div><div style={styles.chart}>{dashboard.daily_clicks.map((item) => <div style={styles.barWrap} title={`${item.date}: ${item.clicks}`} key={item.date}><div style={{ ...styles.bar, height: `${Math.max(3, item.clicks / maxClicks * 100)}%` }} /><span>{item.date.slice(8)}</span></div>)}</div></section>
     <section id="links" className="admin-grid" style={styles.grid}><div style={styles.panel}><div style={styles.panelHeader}><div><h2 style={styles.heading}>Top links</h2><span style={styles.muted}>Best performing tracking links</span></div><span style={styles.panelKicker}>TOP 10</span></div>{dashboard.top_links.map((link) => <div style={styles.topRow} key={link.slug}><div><strong>/r/{link.slug}</strong><div style={styles.badgeLine}><span style={styles.badge}>{link.source}</span><span style={styles.badgeMuted}>{link.campaign}</span></div></div><div style={styles.topActions}><strong style={styles.topCount}>{link.clicks}</strong><button className="admin-action" style={styles.linkButton} onClick={() => void copyLink(link.slug)}>{copiedSlug === link.slug ? "Copied" : "Copy"}</button></div></div>)}{dashboard.top_links.length === 0 && <p style={styles.muted}>Sin clicks todavía.</p>}</div><div style={styles.panel}><div style={styles.panelHeader}><div><h2 style={styles.heading}>{form.id ? "Edit link" : "Create link"}</h2><span style={styles.muted}>Configure a new acquisition path</span></div></div><LinkForm form={form} setForm={setForm} onSubmit={saveLink} editing={Boolean(form.id)} /></div></section>
     {message && <p style={styles.success}>{message}</p>}{error && <p style={styles.error}>{error}</p>}
-    <section id="campaigns" style={styles.panel}><div style={styles.panelHeader}><div><h2 style={styles.heading}>Campaigns</h2><span style={styles.muted}>All configured marketing links</span></div><span style={styles.panelKicker}>{loading ? "UPDATING…" : `${dashboard.campaigns.length} LINKS`}</span></div><div style={styles.tableScroll}><table className="admin-table" style={styles.table}><thead><tr><th>Slug</th><th>Source</th><th>Campaign</th><th>Clicks</th><th>Visitors</th><th>Last click</th><th>Status</th><th /></tr></thead><tbody>{dashboard.campaigns.map((row) => <tr className="admin-table-row" key={row.id}><td><strong>/r/{row.slug}</strong></td><td><span style={styles.badge}>{row.source}</span></td><td><span style={styles.badgeMuted}>{row.campaign}</span></td><td style={styles.numeric}>{row.clicks}</td><td style={styles.muted}>N/D</td><td style={styles.muted}>{row.last_click ? new Date(row.last_click).toLocaleString() : "N/D"}</td><td><span style={row.active ? styles.active : styles.inactive}>{row.active ? "Active" : "Inactive"}</span></td><td><button className="admin-action" style={styles.linkButton} onClick={() => void copyLink(row.slug)}>{copiedSlug === row.slug ? "Copied" : "Copy"}</button><button className="admin-action" style={styles.linkButton} onClick={() => setForm({ id: row.id, slug: row.slug, source: row.source, campaign: row.campaign, destination_url: row.destination_url })}>Edit</button><button className="admin-action" style={styles.linkButton} onClick={() => void toggleLink(row)}>{row.active ? "Disable" : "Enable"}</button></td></tr>)}</tbody></table></div></section>
+    <section id="campaigns" style={styles.panel}><div style={styles.panelHeader}><div><h2 style={styles.heading}>Campaigns</h2><span style={styles.muted}>All configured marketing links</span></div><span style={styles.panelKicker}>{loading ? "UPDATING…" : `${dashboard.campaigns.length} LINKS`}</span></div><div style={styles.tableScroll}><table className="admin-table" style={styles.table}><thead><tr><th>Slug</th><th>Source</th><th>Campaign</th><th>Clicks</th><th>Visitors</th><th>Last click</th><th>Status</th><th /></tr></thead><tbody>{dashboard.campaigns.map((row) => <tr className="admin-table-row" key={row.id}><td><strong>/r/{row.slug}</strong></td><td><span style={styles.badge}>{row.source}</span></td><td><span style={styles.badgeMuted}>{row.campaign}</span></td><td style={styles.numeric}>{row.clicks}</td><td style={styles.muted}>N/D</td><td style={styles.muted}>{row.last_click ? new Date(row.last_click).toLocaleString() : "N/D"}</td><td><span style={row.active ? styles.active : styles.inactive}>{row.active ? "Active" : "Inactive"}</span></td><td><button className="admin-action" style={styles.linkButton} onClick={() => void copyLink(row.slug)}>{copiedSlug === row.slug ? "Copied" : "Copy"}</button><button className="admin-action" style={styles.linkButton} onClick={() => setForm({ id: row.id, slug: row.slug, source: row.source, campaign: row.campaign, destination_url: row.destination_url })}>Edit</button><button className="admin-action" style={styles.linkButton} onClick={() => void toggleLink(row)}>{row.active ? "Disable" : "Enable"}</button><button type="button" className="admin-delete" style={{ ...styles.linkButton, color: "#d77b86" }} disabled={Boolean(deletingId)} onClick={() => void removeLink(row)}>{deletingId === row.id ? "Deleting…" : "Delete"}</button></td></tr>)}</tbody></table></div></section>
   </main>;
 }
 
