@@ -145,3 +145,7 @@ video/out/
 
 # Local archive exports
 *.rar
+
+# Local analysis notes and ZIP exports
+x_analysis.md
+*.zip

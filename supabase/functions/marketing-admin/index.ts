@@ -1,6 +1,8 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const adminPassword = Deno.env.get("MARKETING_ADMIN_PASSWORD");
+const sessionSecret = Deno.env.get("MARKETING_ADMIN_SESSION_SECRET");
+const SESSION_TTL_SECONDS = 7 * 24 * 60 * 60;
 const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false, autoRefreshToken: false } });
 const origin = "https://zmetrics.net";
 const slugPattern = /^[a-z0-9][a-z0-9_-]{0,63}$/;
@@ -23,6 +25,28 @@ function text(value: unknown, max: number): value is string { return typeof valu
 function url(value: unknown): value is string { if (!text(value, 2048)) return false; try { const parsed = new URL(value); return parsed.protocol === "http:" || parsed.protocol === "https:"; } catch { return false; } }
 function start(range: string): number | null { return range === "all" ? null : Date.now() - (range === "7d" ? 7 : 30) * 86400000; }
 function top(values: Map<string, number>) { const item = [...values.entries()].sort((a, b) => b[1] - a[1])[0]; return item ? { name: item[0], clicks: item[1] } : null; }
+function base64Url(value: Uint8Array | string): string { const bytes = typeof value === "string" ? new TextEncoder().encode(value) : value; return btoa(String.fromCharCode(...bytes)).replaceAll("+", "-").replaceAll("/", "_").replaceAll("=", ""); }
+function decodeBase64Url(value: string): Uint8Array { const padded = value.replaceAll("-", "+").replaceAll("_", "/") + "=".repeat((4 - value.length % 4) % 4); return Uint8Array.from(atob(padded), (character) => character.charCodeAt(0)); }
+async function sessionKey() { if (!sessionSecret) throw new Error("session_secret_not_configured"); return crypto.subtle.importKey("raw", new TextEncoder().encode(sessionSecret), { name: "HMAC", hash: "SHA-256" }, false, ["sign", "verify"]); }
+async function createSessionToken(): Promise<string> {
+  const now = Math.floor(Date.now() / 1000);
+  const payload = base64Url(JSON.stringify({ v: 1, iat: now, exp: now + SESSION_TTL_SECONDS, jti: crypto.randomUUID() }));
+  const signature = await crypto.subtle.sign("HMAC", await sessionKey(), new TextEncoder().encode(payload));
+  return `${payload}.${base64Url(new Uint8Array(signature))}`;
+}
+async function isValidSessionToken(token: string | null): Promise<boolean> {
+  if (!token || !sessionSecret) return false;
+  const parts = token.split(".");
+  if (parts.length !== 2) return false;
+  const [payloadPart, signaturePart] = parts;
+  if (!payloadPart || !signaturePart) return false;
+  try {
+    const payload = JSON.parse(new TextDecoder().decode(decodeBase64Url(payloadPart))) as { v?: number; exp?: number };
+    if (payload.v !== 1 || typeof payload.exp !== "number" || payload.exp <= Math.floor(Date.now() / 1000)) return false;
+    return await crypto.subtle.verify("HMAC", await sessionKey(), decodeBase64Url(signaturePart), new TextEncoder().encode(payloadPart));
+  } catch { return false; }
+}
+function bearerToken(request: Request): string | null { const value = request.headers.get("authorization"); return value?.startsWith("Bearer ") ? value.slice(7).trim() : null; }
 
 async function dashboard(request: Request) {
   const requested = new URL(request.url).searchParams.get("range") ?? "30d";
@@ -58,16 +82,14 @@ async function dashboard(request: Request) {
   });
 }
 
-async function createLink(request: Request) {
-  const body = await request.json() as Record<string, unknown>;
+async function createLink(request: Request, body: Record<string, unknown>) {
   if (!slugPattern.test(String(body.slug ?? "")) || !text(body.source, 100) || !text(body.campaign, 150) || !url(body.destination_url)) return error(request, "invalid_link", 400);
   const { data, error: insertError } = await supabase.from("marketing_links").insert({ slug: body.slug, source: body.source, campaign: body.campaign, destination_url: body.destination_url }).select("*").single();
   if (insertError) return error(request, insertError.code === "23505" ? "slug_already_exists" : "create_failed", insertError.code === "23505" ? 409 : 500);
   return json(request, { link: data }, 201);
 }
 
-async function updateLink(request: Request) {
-  const body = await request.json() as Record<string, unknown>;
+async function updateLink(request: Request, body: Record<string, unknown>) {
   if (!text(body.id, 100)) return error(request, "invalid_id", 400);
   const updates: Record<string, unknown> = {};
   if (body.slug !== undefined) { if (!slugPattern.test(String(body.slug))) return error(request, "invalid_slug", 400); updates.slug = body.slug; }
@@ -83,7 +105,21 @@ async function updateLink(request: Request) {
 
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: headers(request) });
-  if (!adminPassword || request.headers.get("authorization") !== `Bearer ${adminPassword}`) return error(request, "unauthorized", 401);
-  try { if (request.method === "GET") return await dashboard(request); if (request.method === "POST") return await createLink(request); if (request.method === "PATCH") return await updateLink(request); return error(request, "method_not_allowed", 405); }
+  try {
+    if (request.method === "POST") {
+      const body = await request.json() as Record<string, unknown>;
+      if (body.action === "login") {
+        if (!adminPassword || typeof body.password !== "string" || body.password !== adminPassword) return error(request, "unauthorized", 401);
+        if (!sessionSecret) return error(request, "server_not_configured", 500);
+        return json(request, { session_token: await createSessionToken(), expires_in: SESSION_TTL_SECONDS });
+      }
+      if (!await isValidSessionToken(bearerToken(request))) return error(request, "unauthorized", 401);
+      return await createLink(request, body);
+    }
+    if (!await isValidSessionToken(bearerToken(request))) return error(request, "unauthorized", 401);
+    if (request.method === "GET") return await dashboard(request);
+    if (request.method === "PATCH") return await updateLink(request, await request.json() as Record<string, unknown>);
+    return error(request, "method_not_allowed", 405);
+  }
   catch (caught) { console.error(caught instanceof Error ? caught.message : "admin_request_failed"); return error(request, "invalid_request", 400); }
 });
