@@ -1,6 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const adminToken = Deno.env.get("MARKETING_ADMIN_TOKEN");
+const adminPassword = Deno.env.get("MARKETING_ADMIN_PASSWORD");
 const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false, autoRefreshToken: false } });
 const origin = "https://zmetrics.net";
 const slugPattern = /^[a-z0-9][a-z0-9_-]{0,63}$/;
@@ -83,7 +83,7 @@ async function updateLink(request: Request) {
 
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: headers(request) });
-  if (!adminToken || request.headers.get("authorization") !== `Bearer ${adminToken}`) return error(request, "unauthorized", 401);
+  if (!adminPassword || request.headers.get("authorization") !== `Bearer ${adminPassword}`) return error(request, "unauthorized", 401);
   try { if (request.method === "GET") return await dashboard(request); if (request.method === "POST") return await createLink(request); if (request.method === "PATCH") return await updateLink(request); return error(request, "method_not_allowed", 405); }
   catch (caught) { console.error(caught instanceof Error ? caught.message : "admin_request_failed"); return error(request, "invalid_request", 400); }
 });
