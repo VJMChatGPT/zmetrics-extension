@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/api/marketing", "destination": "https://mdtvrhfzwmdunawjarvs.supabase.co/functions/v1/marketing-events" },
     { "source": "/r/:slug", "destination": "https://mdtvrhfzwmdunawjarvs.supabase.co/functions/v1/marketing-redirect?slug=:slug" },
     {
       "source": "/api/telemetry",

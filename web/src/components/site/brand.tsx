@@ -1,10 +1,15 @@
 import { Link } from "@tanstack/react-router";
 import { SITE_CONFIG } from "@/config/site";
+import { trackStoreClick } from "@/lib/campaign-attribution";
 import { cn } from "@/lib/utils";
 
 export function Logo({ className }: { className?: string }) {
   return (
-    <Link to="/" className={cn("flex items-center gap-1.5 sm:gap-2", className)} aria-label="ZMetrics home">
+    <Link
+      to="/"
+      className={cn("flex items-center gap-1.5 sm:gap-2", className)}
+      aria-label="ZMetrics home"
+    >
       <img
         src={SITE_CONFIG.assets.mark}
         alt=""
@@ -35,6 +40,10 @@ export function ChromeButton({
   return (
     <a
       href={SITE_CONFIG.chromeWebStoreUrl}
+      onClick={trackStoreClick}
+      onAuxClick={(event) => {
+        if (event.button === 1) trackStoreClick();
+      }}
       target="_blank"
       rel="noreferrer"
       className={cn(

@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { absoluteOgImageUrl, SITE_CONFIG } from "../config/site";
+import { CampaignAttribution } from "../components/site/campaign-attribution";
 
 function NotFoundComponent() {
   return (
@@ -141,6 +142,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <CampaignAttribution />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
     </QueryClientProvider>

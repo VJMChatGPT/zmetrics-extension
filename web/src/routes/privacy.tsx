@@ -38,7 +38,11 @@ const SECTIONS = [
   },
   {
     title: "Marketing tracking",
-    body: "ZMetrics does not use Google Analytics. Marketing links record only the link, source, campaign, timestamp and referrer before redirecting.",
+    body: "External publication links may attribute visits to a specific campaign. After validating a signed campaign token, zmetrics.net stores a random temporary session ID and campaign attribution in sessionStorage for the current tab's session. This attribution follows navigation between website pages without cookies, fingerprinting or IP-derived identifiers. Supabase stores the campaign link ID, event type (website visit or Add to Chrome click), random session ID, website page path and timestamp. We count each session's visit once and use unique sessions that click Add to Chrome to calculate campaign conversion. Multiple clicks may be recorded for the same session. Direct visitors without a valid campaign token do not generate campaign events. Buttons link directly to the official Chrome Web Store, even when tracking fails. This system uses no Google Analytics or Google Tag Manager and sends no telemetry from the extension. Historical redirect records may also contain a source, campaign, timestamp and referrer; those records are kept separately from session-based campaign analytics.",
+  },
+  {
+    title: "Website storage and cookies",
+    body: "Campaign attribution uses sessionStorage, not cookies, and normally clears when the tab's session ends. Attribution tokens also expire after a maximum of seven days. Browser session restoration may preserve sessionStorage. The website repository includes a separate sidebar interface preference cookie; it is not used to identify visitors or attribute marketing campaigns. This policy does not claim that all website functionality or infrastructure is cookie-free.",
   },
   {
     title: "Vercel and website logs",
@@ -50,7 +54,7 @@ const SECTIONS = [
   },
   {
     title: "Information we do not collect",
-    body: "ZMetrics does not collect or transmit browsing history, visited domains, active page content, cookies, form data, wallet addresses, balances, payment information, location, contacts, files, page titles, email addresses, passwords or authentication tokens. It does not create analytics identifiers, send usage events or profile users across websites.",
+    body: "The Chrome extension does not collect or transmit browsing history, visited domains, active page content, cookies, form data, wallet addresses, balances, payment information, location, contacts, files, page titles, email addresses, passwords or authentication tokens. It does not create analytics identifiers or send telemetry. Website campaign attribution records only the campaign events described above, not browsing activity outside zmetrics.net, and does not profile users across websites.",
   },
   {
     title: "Data retention",
@@ -59,6 +63,10 @@ const SECTIONS = [
   {
     title: "User deletion rights and choices",
     body: "You can remove locally stored preferences and the floating-window ID by clearing the extension's stored data or removing the extension, subject to Chrome Sync behavior. You can also remove or change individual watchlist and display preferences from the extension settings. To ask about data controlled by ZMetrics, contact support@zmetrics.net. Deletion from CoinGecko, Chrome Sync, Vercel or other third-party systems is subject to the relevant provider's systems and policies and may require a separate request to that provider.",
+  },
+  {
+    title: "Campaign data retention",
+    body: "Browser attribution is temporary and session-based, but server-side campaign event records and historical redirect records are not removed when you close a tab. No automatic deletion period is currently configured for these records. For questions or deletion requests, contact support@zmetrics.net. We do not use campaign session IDs to identify a named person.",
   },
   {
     title: "Data security",
@@ -87,10 +95,10 @@ function PrivacyPage() {
             Privacy
           </p>
           <h1 className="text-4xl font-semibold md:text-5xl">Privacy Policy</h1>
-          <p className="mt-4 text-muted-foreground">Last updated: September 26, 2026</p>
+          <p className="mt-4 text-muted-foreground">Last updated: October 3, 2026</p>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
             This Privacy Policy explains how ZMetrics handles information when you use the Chrome
-            extension.
+            extension and website.
           </p>
           <div className="mt-12 space-y-4">
             {SECTIONS.map((s) => (
@@ -105,6 +113,3 @@ function PrivacyPage() {
     </SiteShell>
   );
 }
-
-
-
