@@ -8,6 +8,9 @@ export function Navbar() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8">
         <Logo />
         <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
+          <Link to="/crypto-price-tracker" className="transition-colors hover:text-foreground">
+            Crypto Price Tracker
+          </Link>
           <a href="/#features" className="transition-colors hover:text-foreground">
             Features
           </a>
@@ -37,6 +40,12 @@ export function Footer() {
         <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
           <Link to="/crypto-price-tracker" className="transition-colors hover:text-foreground">
             Crypto Price Tracker
+          </Link>
+          <Link
+            to="/guides/track-crypto-prices-in-chrome"
+            className="transition-colors hover:text-foreground"
+          >
+            How to track crypto prices in Chrome
           </Link>
           <Link to="/privacy" className="transition-colors hover:text-foreground">
             Privacy
@@ -68,4 +77,3 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-

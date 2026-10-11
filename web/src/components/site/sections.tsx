@@ -210,6 +210,12 @@ export function FeatureCustomize() {
         title="Make it yours."
         text="Choose the assets you follow, reorder them, and switch between USD and EUR."
       />
+      <Link
+        to="/guides/track-crypto-prices-in-chrome"
+        className="mx-auto mt-5 flex w-fit text-sm font-semibold text-primary transition-colors hover:text-foreground"
+      >
+        Learn how to set up your watchlist in Chrome
+      </Link>
       <div className="mt-12 grid gap-5 md:grid-cols-3">
         {[
           { label: "Add assets", el: <SearchCard /> },

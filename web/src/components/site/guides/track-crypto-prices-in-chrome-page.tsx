@@ -39,6 +39,21 @@ function BodyCopy({ children }: { children: React.ReactNode }) {
   return <p className="mt-5 text-base leading-relaxed text-muted-foreground md:text-lg">{children}</p>;
 }
 
+function Steps({ items }: { items: string[] }) {
+  return (
+    <ol className="mt-8 grid gap-3">
+      {items.map((step, index) => (
+        <li key={step} className="card-glass flex items-start gap-4 rounded-xl p-4 text-sm leading-relaxed">
+          <span aria-hidden="true" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/15 font-semibold text-primary">
+            {index + 1}
+          </span>
+          <span className="pt-1 font-medium">{step}</span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 const FAQS = [
   {
     question: "Can I track crypto prices directly in Chrome?",
@@ -77,9 +92,8 @@ export function TrackCryptoPricesInChromePage() {
               How to track crypto prices in Chrome
             </h1>
             <p className="animate-rise mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground [animation-delay:120ms] md:text-xl">
-              Checking crypto prices should not require a collection of open tabs. This guide
-              explains the practical ways to follow market data in Chrome and where a focused
-              browser extension fits.
+              Install ZMetrics, choose your assets and set up quick access to market data.
+              Follow the steps below to build a watchlist and use the popup or floating window.
             </p>
             <div className="animate-rise mt-8 flex justify-center [animation-delay:220ms]">
               <ChromeButton size="lg" />
@@ -96,9 +110,8 @@ export function TrackCryptoPricesInChromePage() {
             right now?
           </BodyCopy>
           <BodyCopy>
-            A browser-based workflow keeps that check close to the context where you need it. You
-            can see a short list of relevant assets, review their daily movement and return to
-            your tab without turning a quick update into a full research session.
+            This tutorial covers setup and everyday use. For a short product introduction,
+            see the <Link to="/" className="text-primary underline underline-offset-4 hover:text-foreground">ZMetrics overview</Link>.
           </BodyCopy>
         </ArticleSection>
 
@@ -118,45 +131,43 @@ export function TrackCryptoPricesInChromePage() {
           </BodyCopy>
           <div className="mt-10">
             <BrowserMockup />
+            <p className="mt-3 text-sm text-muted-foreground">
+              Illustrative preview. Prices shown here are examples, not current market quotes.
+            </p>
           </div>
         </ArticleSection>
 
         <ArticleSection>
-          <SectionTitle>Install the ZMetrics Chrome extension</SectionTitle>
+          <SectionTitle>1. Install and open the extension</SectionTitle>
           <BodyCopy>
-            ZMetrics is built for quick market checks inside Chrome. To get started, open its
-            official Chrome Web Store listing, install the extension and open it from the browser
-            toolbar. The first view gives you a compact list of tracked assets and their current
-            market data.
+            Use the Add to Chrome link on this page to open the official listing. Once installed,
+            open ZMetrics from Chrome's extensions menu. Pin it if you want its icon on the toolbar.
+            You do not need to create an account to use the tracker.
           </BodyCopy>
-          <ol className="mt-8 grid gap-3">
-            {[
-              "Install ZMetrics from the Chrome Web Store.",
-              "Open the extension from the Chrome toolbar.",
-              "Choose the assets you want to follow.",
-            ].map((step, index) => (
-              <li key={step} className="card-glass flex items-center gap-4 rounded-xl p-4 text-sm">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/15 font-semibold text-primary">
-                  {index + 1}
-                </span>
-                <span className="font-medium">{step}</span>
-              </li>
-            ))}
-          </ol>
+          <Steps items={[
+            "On the Chrome Web Store listing, choose Add to Chrome and review the installation prompt.",
+            "Open Chrome's extensions menu, find ZMetrics and optionally pin it to the toolbar.",
+            "Click ZMetrics to open the popup. Each row shows an asset's market cap, price and 24h percentage change.",
+          ]} />
         </ArticleSection>
 
         <ArticleSection>
-          <SectionTitle>Open the tracker and choose your assets</SectionTitle>
+          <SectionTitle>2. Add assets and choose your display currency</SectionTitle>
           <BodyCopy>
-            A useful crypto price tracker should show the assets you actually follow, rather than
-            forcing you through a long market list every time. ZMetrics lets you search for assets
-            and add them to a personal watchlist.
+            Click the gear icon to open Options. The Assets section contains the search field
+            and your current list. Search results come from CoinGecko; check both the name and
+            symbol before selecting an asset, since different assets can share a ticker.
           </BodyCopy>
           <BodyCopy>
-            After adding an asset, you can arrange the list around your priorities. You can also
-            choose whether prices appear in USD or EUR, so the display matches the way you review
-            the market.
+            Currency selection changes the way prices and market caps are displayed. It does not
+            convert funds or make a trade.
           </BodyCopy>
+          <Steps items={[
+            "In Options, type at least two characters of an asset name or ticker into Search coin, then click Search or press Enter.",
+            "Find the correct result and click Add. Already added means the asset is already in your list; use its checkbox to show it if it is hidden.",
+            "Under Currency, use Display prices in to choose US Dollar (USD) or Euro (EUR). The preference is saved automatically.",
+            "Close Options with the close button or gear icon to return to the market table.",
+          ]} />
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             <div className="card-glass rounded-2xl p-4">
               <SearchCard />
@@ -177,38 +188,50 @@ export function TrackCryptoPricesInChromePage() {
               </p>
             </div>
           </div>
+          <p className="mt-4 text-sm text-muted-foreground">
+            These illustrations explain the controls; they are not step-by-step screenshots.
+          </p>
         </ArticleSection>
 
         <ArticleSection className="relative isolate overflow-hidden">
           <div className="aurora-blob-indigo pointer-events-none absolute -bottom-20 -right-40 -z-10 h-[460px] w-[460px]" />
           <div className="grid items-center gap-12 md:grid-cols-[0.8fr_1.2fr]">
             <div>
-              <SectionTitle>Track prices with a popup, shortcut and floating window</SectionTitle>
+              <SectionTitle>3. Use the popup or toggle the floating window</SectionTitle>
               <BodyCopy>
-                When you need a quick update, open the popup from the toolbar. For a faster
-                workflow, use the keyboard shortcut to open the tracker without reaching for the
-                mouse.
+                Click the toolbar icon for a quick popup check. The keyboard shortcut has a
+                different purpose: it opens a separate floating tracker window. Pressing the
+                same shortcut again closes that window.
               </BodyCopy>
               <div className="mt-8 flex items-center gap-3 text-sm font-medium text-muted-foreground">
                 <Keyboard className="h-4 w-4 text-primary" />
                 <Shortcut />
               </div>
               <BodyCopy>
-                The floating window gives you another option when you want market data to remain
-                visible beside the page you are working on.
+                The default is Ctrl + Shift + Z on Windows/Linux or Command + Shift + Z on macOS.
+                Move the floating window beside your work when you want the table to stay visible.
               </BodyCopy>
+              <Steps items={[
+                "Press the assigned shortcut to open the floating window; press it again to close it.",
+                "To check or change the assignment, open Options and choose Change shortcut in Chrome. This opens Chrome's extension shortcut settings.",
+                "Find ZMetrics and assign an available shortcut. If the default does not work, check the assignment there rather than assuming installation failed.",
+              ]} />
             </div>
             <FloatingWindow className="w-full max-w-sm justify-self-center animate-float" />
           </div>
         </ArticleSection>
 
         <ArticleSection>
-          <SectionTitle>Customize your crypto watchlist</SectionTitle>
+          <SectionTitle>4. Reorder, hide or remove assets</SectionTitle>
           <BodyCopy>
-            Personalization is useful when your market routine changes. Add the assets that matter
-            to you, remove anything you no longer need and reorder the list so the most relevant
-            prices appear first.
+            Open Options again to manage the list. Hiding an asset and removing it are different:
+            an unchecked asset stays in Options, while removal takes it out of the list.
           </BodyCopy>
+          <Steps items={[
+            "Drag an asset row using the dotted handle to change its position. Drop it where you want it; the order is saved automatically.",
+            "Uncheck an asset to hide it from the market table. Check it again to show it without searching again.",
+            "Use the cross marked Remove from list to remove an asset. To restore it later, search for it and click Add.",
+          ]} />
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {[
               { icon: Check, label: "Choose personal assets" },
@@ -221,6 +244,28 @@ export function TrackCryptoPricesInChromePage() {
               </div>
             ))}
           </div>
+        </ArticleSection>
+
+        <ArticleSection>
+          <SectionTitle>Read the table and check for stale data</SectionTitle>
+          <BodyCopy>
+            Price is the latest available quote, Market Cap describes the asset's market size,
+            and 24h % shows its percentage price movement over the previous 24 hours. These are
+            market figures, not the value or performance of your own holdings.
+          </BodyCopy>
+          <BodyCopy>
+            The Updated timestamp indicates when the table was rendered, not when CoinGecko
+            produced the underlying market data. It can change when you reorder or show and hide
+            assets, so it does not guarantee that prices are fresh. Use the refresh icon to
+            request a market-data update.
+          </BodyCopy>
+          <BodyCopy>
+            If an
+            error appears, data may be unavailable or the last available values may still be
+            shown. Check your connection and try again later; a displayed value is not a
+            guarantee of a real-time trading quote. If the table says No assets selected, open
+            Options and enable at least one asset.
+          </BodyCopy>
         </ArticleSection>
 
         <ArticleSection>
@@ -291,7 +336,7 @@ export function TrackCryptoPricesInChromePage() {
                 to="/crypto-price-tracker"
                 className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
               >
-                Explore ZMetrics
+                Explore the ZMetrics crypto price tracker
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
