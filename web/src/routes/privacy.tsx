@@ -34,7 +34,7 @@ const SECTIONS = [
   },
   {
     title: "CoinGecko data sharing",
-    body: "To provide prices and market data, ZMetrics sends the selected asset IDs, selected currency and the requested 24-hour price-change field to CoinGecko's markets API. When you search for an asset, the search text is sent to CoinGecko's search API. CoinGecko responses are processed temporarily in the extension to display prices and search results. Selected search results may be stored as custom asset ID, symbol and icon URL in chrome.storage.sync. Coin images may be loaded from CoinGecko-hosted URLs. CoinGecko may receive normal request metadata under its own privacy policy.",
+    body: "To provide prices and market data, ZMetrics sends the selected asset IDs, selected currency and the requested 24-hour price-change field to CoinGecko's markets API. The same request also includes BTC as a comparison benchmark when it is not selected; this does not add BTC to your saved watchlist. Radar analyzes these market responses locally to compare assets and calculate equal-weight watchlist observations. No watchlist analysis or Radar observations are sent to ZMetrics or an AI provider. When you search for an asset, the search text is sent to CoinGecko's search API. CoinGecko responses are processed temporarily in the extension to display prices and search results. Selected search results may be stored as custom asset ID, symbol and icon URL in chrome.storage.sync. Coin images may be loaded from CoinGecko-hosted URLs. CoinGecko may receive normal request metadata under its own privacy policy.",
   },
   {
     title: "Marketing tracking",
@@ -50,7 +50,7 @@ const SECTIONS = [
   },
   {
     title: "Chrome Sync and local browser processing",
-    body: "ZMetrics uses chrome.storage.sync for watchlist and display preferences. It uses chrome.storage.session to remember the ID of its floating window while the browser session is active, with chrome.storage.local as a fallback when session storage is unavailable. It requests windows to create, find and close the floating tracker window. It uses chrome.tabs.create only to open user-requested Chrome shortcut settings and X links; it does not declare the tabs permission and does not read tab URLs, browsing history or page content. The api.coingecko.com host permission is used for market prices and searches. There are no content scripts.",
+    body: "ZMetrics uses chrome.storage.sync for watchlist and display preferences. It uses chrome.storage.session to remember the ID of its floating window while the browser session is active, with chrome.storage.local as a fallback when session storage is unavailable. It uses the chrome.windows API to create, find and close the floating tracker window; this does not require a separate windows permission. It uses chrome.tabs.create only to open user-requested Chrome shortcut settings and X links; it does not declare the tabs permission and does not read tab URLs, browsing history or page content. The api.coingecko.com host permission is used for market prices and searches. There are no content scripts.",
   },
   {
     title: "Information we do not collect",
@@ -95,7 +95,7 @@ function PrivacyPage() {
             Privacy
           </p>
           <h1 className="text-4xl font-semibold md:text-5xl">Privacy Policy</h1>
-          <p className="mt-4 text-muted-foreground">Last updated: October 3, 2026</p>
+          <p className="mt-4 text-muted-foreground">Last updated: October 13, 2026</p>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
             This Privacy Policy explains how ZMetrics handles information when you use the Chrome
             extension and website.
