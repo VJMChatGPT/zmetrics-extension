@@ -211,6 +211,12 @@ export function FeatureCustomize() {
         text="Choose the assets you follow, reorder them, and switch between USD and EUR."
       />
       <Link
+        to="/crypto-watchlist-for-chrome"
+        className="mx-auto mt-5 flex w-fit text-sm font-semibold text-primary transition-colors hover:text-foreground"
+      >
+        Explore your crypto watchlist options
+      </Link>
+      <Link
         to="/guides/track-crypto-prices-in-chrome"
         className="mx-auto mt-5 flex w-fit text-sm font-semibold text-primary transition-colors hover:text-foreground"
       >

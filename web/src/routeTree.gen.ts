@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CryptoPriceTrackerRouteImport } from './routes/crypto-price-tracker'
+import { Route as CryptoWatchlistForChromeRouteImport } from './routes/crypto-watchlist-for-chrome'
 import { Route as FcRouteImport } from './routes/fc'
 import { Route as MarketingRouteImport } from './routes/marketing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -32,6 +33,12 @@ const CryptoPriceTrackerRoute = CryptoPriceTrackerRouteImport.update({
   path: '/crypto-price-tracker',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CryptoWatchlistForChromeRoute =
+  CryptoWatchlistForChromeRouteImport.update({
+    id: '/crypto-watchlist-for-chrome',
+    path: '/crypto-watchlist-for-chrome',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const FcRoute = FcRouteImport.update({
   id: '/fc',
   path: '/fc',
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/crypto-price-tracker': typeof CryptoPriceTrackerRoute
+  '/crypto-watchlist-for-chrome': typeof CryptoWatchlistForChromeRoute
   '/fc': typeof FcRoute
   '/marketing': typeof MarketingRoute
   '/privacy': typeof PrivacyRoute
@@ -67,6 +75,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/crypto-price-tracker': typeof CryptoPriceTrackerRoute
+  '/crypto-watchlist-for-chrome': typeof CryptoWatchlistForChromeRoute
   '/fc': typeof FcRoute
   '/marketing': typeof MarketingRoute
   '/privacy': typeof PrivacyRoute
@@ -77,6 +86,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/crypto-price-tracker': typeof CryptoPriceTrackerRoute
+  '/crypto-watchlist-for-chrome': typeof CryptoWatchlistForChromeRoute
   '/fc': typeof FcRoute
   '/marketing': typeof MarketingRoute
   '/privacy': typeof PrivacyRoute
@@ -88,6 +98,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/crypto-price-tracker'
+    | '/crypto-watchlist-for-chrome'
     | '/fc'
     | '/marketing'
     | '/privacy'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/crypto-price-tracker'
+    | '/crypto-watchlist-for-chrome'
     | '/fc'
     | '/marketing'
     | '/privacy'
@@ -106,6 +118,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/crypto-price-tracker'
+    | '/crypto-watchlist-for-chrome'
     | '/fc'
     | '/marketing'
     | '/privacy'
@@ -116,6 +129,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   CryptoPriceTrackerRoute: typeof CryptoPriceTrackerRoute
+  CryptoWatchlistForChromeRoute: typeof CryptoWatchlistForChromeRoute
   FcRoute: typeof FcRoute
   MarketingRoute: typeof MarketingRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -143,6 +157,13 @@ declare module '@tanstack/react-router' {
       path: '/crypto-price-tracker'
       fullPath: '/crypto-price-tracker'
       preLoaderRoute: typeof CryptoPriceTrackerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/crypto-watchlist-for-chrome': {
+      id: '/crypto-watchlist-for-chrome'
+      path: '/crypto-watchlist-for-chrome'
+      fullPath: '/crypto-watchlist-for-chrome'
+      preLoaderRoute: typeof CryptoWatchlistForChromeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/fc': {
@@ -180,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   CryptoPriceTrackerRoute: CryptoPriceTrackerRoute,
+  CryptoWatchlistForChromeRoute: CryptoWatchlistForChromeRoute,
   FcRoute: FcRoute,
   MarketingRoute: MarketingRoute,
   PrivacyRoute: PrivacyRoute,

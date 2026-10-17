@@ -234,6 +234,13 @@ export function CryptoPriceTrackerPage() {
           text="Build a simple crypto watchlist around your workflow. Add assets, reorder them and choose how prices are displayed."
         />
         <Link
+          to="/crypto-watchlist-for-chrome"
+          className="mx-auto mt-5 flex w-fit items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-foreground"
+        >
+          Explore a customizable crypto watchlist for Chrome
+          <span aria-hidden="true">→</span>
+        </Link>
+        <Link
           to="/guides/track-crypto-prices-in-chrome"
           className="mx-auto mt-5 flex w-fit items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-foreground"
         >

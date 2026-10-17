@@ -224,14 +224,25 @@ export function TrackCryptoPricesInChromePage() {
         <ArticleSection>
           <SectionTitle>4. Reorder, hide or remove assets</SectionTitle>
           <BodyCopy>
-            Open Options again to manage the list. Hiding an asset and removing it are different:
-            an unchecked asset stays in Options, while removal takes it out of the list.
+            Open Options again to manage the list. Unchecking an asset hides its price row and
+            keeps it in Options. Remove from list also removes the Options entry, with an
+            exception for default assets that have been removed and added again.
           </BodyCopy>
           <Steps items={[
             "Drag an asset row using the dotted handle to change its position. Drop it where you want it; the order is saved automatically.",
             "Uncheck an asset to hide it from the market table. Check it again to show it without searching again.",
-            "Use the cross marked Remove from list to remove an asset. To restore it later, search for it and click Add.",
+            "Use the cross marked Remove from list. If the asset disappears from Options, search for it and click Add to restore it. A default asset you previously removed and re-added may instead stay in Options unchecked; check it to show it again.",
           ]} />
+          <BodyCopy>
+            For a focused look at asset selection and ordering, explore the{" "}
+            <Link
+              to="/crypto-watchlist-for-chrome"
+              className="text-primary underline underline-offset-4 hover:text-foreground"
+            >
+              customizable crypto watchlist for Chrome
+            </Link>
+            .
+          </BodyCopy>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {[
               { icon: Check, label: "Choose personal assets" },
